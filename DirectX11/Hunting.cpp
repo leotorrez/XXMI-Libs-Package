@@ -329,45 +329,61 @@ void DumpShaderSlotProfiling(wchar_t *dir)
 			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
 		}
 		
-		// Print unique shader pair + slot configurations
-		sprintf_s(buf, 256, "Unique Shader Pair Slot Configurations:\n\n");
+		// Print shader pairs
+		sprintf_s(buf, 256, "Shader Pairs (Total: %u):\n\n", (unsigned)data.shader_pairs.size());
 		WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
 		
-		for (auto &config_pair : data.slot_config_usage) {
-			const ShaderPairSlotConfig &config = config_pair.first;
-			unsigned draw_count = config_pair.second;
+		for (auto &pair_entry : data.shader_pairs) {
+			const ShaderPairProfilingData &pair_data = pair_entry.second;
 			
-			sprintf_s(buf, 256, "  VS: %016llx  PS: %016llx  (Draw calls: %u)\n",
-				config.vertex_shader_hash, config.pixel_shader_hash, draw_count);
+			sprintf_s(buf, 256, "  VS: %016llx  PS: %016llx\n",
+				pair_data.vertex_shader_hash, pair_data.pixel_shader_hash);
+			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+			sprintf_s(buf, 256, "  Total Draw Calls: %u\n", pair_data.total_draw_calls);
+			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+			sprintf_s(buf, 256, "  Unique Slot Configurations: %u\n\n", (unsigned)pair_data.slot_configs.size());
 			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
 			
-			// Print VS slot bindings
-			if (!config.vs_slot_config.bound_resources.empty()) {
-				sprintf_s(buf, 256, "    VS Slots:\n");
+			// Print each slot configuration
+			for (auto &config_entry : pair_data.slot_configs) {
+				const ShaderStageSlotConfig &vs_config = config_entry.first.first;
+				const ShaderStageSlotConfig &ps_config = config_entry.first.second;
+				unsigned draw_count = config_entry.second;
+				
+				sprintf_s(buf, 256, "    Configuration (Draw calls: %u):\n", draw_count);
 				WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
-				for (const ShaderSlotResourceInfo &slot_info : config.vs_slot_config.bound_resources) {
-					sprintf_s(buf, 256, "      t%u: %08x (orig: %08x)\n",
-						slot_info.slot, slot_info.resource_hash, slot_info.orig_hash);
+				
+				// Print VS slot bindings
+				if (!vs_config.bound_resources.empty()) {
+					sprintf_s(buf, 256, "      VS Slots:\n");
 					WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+					for (const ShaderSlotResourceInfo &slot_info : vs_config.bound_resources) {
+						sprintf_s(buf, 256, "        t%u: %08x (orig: %08x)\n",
+							slot_info.slot, slot_info.resource_hash, slot_info.orig_hash);
+						WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+					}
 				}
-			}
-			
-			// Print PS slot bindings
-			if (!config.ps_slot_config.bound_resources.empty()) {
-				sprintf_s(buf, 256, "    PS Slots:\n");
+				
+				// Print PS slot bindings
+				if (!ps_config.bound_resources.empty()) {
+					sprintf_s(buf, 256, "      PS Slots:\n");
+					WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+					for (const ShaderSlotResourceInfo &slot_info : ps_config.bound_resources) {
+						sprintf_s(buf, 256, "        t%u: %08x (orig: %08x)\n",
+							slot_info.slot, slot_info.resource_hash, slot_info.orig_hash);
+						WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+					}
+				}
+				
+				sprintf_s(buf, 256, "\n");
 				WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
-				for (const ShaderSlotResourceInfo &slot_info : config.ps_slot_config.bound_resources) {
-					sprintf_s(buf, 256, "      t%u: %08x (orig: %08x)\n",
-						slot_info.slot, slot_info.resource_hash, slot_info.orig_hash);
-					WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
-				}
 			}
 			
 			sprintf_s(buf, 256, "\n");
 			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
 		}
 		
-		sprintf_s(buf, 256, "\n\n");
+		sprintf_s(buf, 256, "\n");
 		WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
 	}
 	
@@ -1331,27 +1347,42 @@ static void ToggleShaderSlotProfiling(HackerDevice *device, void *private_data)
 {
 	EnterCriticalSectionPretty(&G->mCriticalSection);
 	
-	if (G->mShaderSlotProfilingActive) {
-		// Stop profiling and dump results
-		G->mShaderSlotProfilingActive = false;
-		
-		// Count total stats
-		int totalDrawCalls = 0;
-		int totalShaderPairs = 0;
-		int totalConfigs = 0;
-		
-		for (auto& entry : G->mShaderSlotProfilingData) {
-			totalConfigs += (int)entry.second.slot_config_usage.size();
-			for (auto& config : entry.second.slot_config_usage) {
-				totalDrawCalls += config.second;
-			}
+	// Check if we're using INI-based profiling (resources registered but not globally active)
+	bool ini_mode = !G->mProfilingEnabledResources.empty() && !G->mShaderSlotProfilingActive;
+	
+	if (G->mShaderSlotProfilingActive || ini_mode) {
+		// Stop profiling and dump results (or just dump if in INI mode)
+		if (G->mShaderSlotProfilingActive) {
+			G->mShaderSlotProfilingActive = false;
 		}
-		totalShaderPairs = totalConfigs;  // Each unique config is essentially a shader pair instance
 		
-		DumpShaderSlotProfiling(G->ANALYSIS_PATH);
+	// Count total stats
+	int totalDrawCalls = 0;
+	int totalShaderPairs = 0;
+	int totalConfigs = 0;
+	
+	for (auto& entry : G->mShaderSlotProfilingData) {
+		totalShaderPairs += (int)entry.second.shader_pairs.size();
+		for (auto& pair : entry.second.shader_pairs) {
+			totalDrawCalls += pair.second.total_draw_calls;
+			totalConfigs += (int)pair.second.slot_configs.size();
+		}
+	}
+	totalShaderPairs = totalConfigs;  // Each unique config is essentially a shader pair instance
 		
-		LogOverlay(LOG_NOTICE, "Shader slot profiling STOPPED. Captured: %d draw calls, %d shader pairs, %d unique configs\n",
-			totalDrawCalls, totalShaderPairs, totalConfigs);
+		// Dump to current directory if ANALYSIS_PATH not set
+		wchar_t *dump_path = (G->ANALYSIS_PATH[0] != 0) ? G->ANALYSIS_PATH : NULL;
+		DumpShaderSlotProfiling(dump_path);
+		
+		if (ini_mode) {
+			LogOverlay(LOG_NOTICE, "Shader slot profiling DUMPED. Captured: %d draw calls, %d shader pairs, %d unique configs\n",
+				totalDrawCalls, totalShaderPairs, totalConfigs);
+			// Clear data for next capture in INI mode
+			G->mShaderSlotProfilingData.clear();
+		} else {
+			LogOverlay(LOG_NOTICE, "Shader slot profiling STOPPED. Captured: %d draw calls, %d shader pairs, %d unique configs\n",
+				totalDrawCalls, totalShaderPairs, totalConfigs);
+		}
 	} else {
 		// Start profiling - clear previous data
 		G->mShaderSlotProfilingActive = true;

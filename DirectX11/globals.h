@@ -393,29 +393,50 @@ struct ShaderStageSlotConfig {
 	}
 };
 
-// Key to identify a specific shader pair (VS+PS) and their slot configuration
-struct ShaderPairSlotConfig {
+// Key to identify a specific shader pair (VS+PS)
+struct ShaderPairKey {
 	UINT64 vertex_shader_hash;
 	UINT64 pixel_shader_hash;
-	ShaderStageSlotConfig vs_slot_config;
-	ShaderStageSlotConfig ps_slot_config;
 	
-	bool operator<(const ShaderPairSlotConfig &other) const {
+	bool operator<(const ShaderPairKey &other) const {
 		if (vertex_shader_hash != other.vertex_shader_hash)
 			return vertex_shader_hash < other.vertex_shader_hash;
-		if (pixel_shader_hash != other.pixel_shader_hash)
-			return pixel_shader_hash < other.pixel_shader_hash;
+		return pixel_shader_hash < other.pixel_shader_hash;
+	}
+};
+
+// Slot configuration with its usage count
+struct SlotConfigWithCount {
+	ShaderStageSlotConfig vs_slot_config;
+	ShaderStageSlotConfig ps_slot_config;
+	unsigned draw_count;
+	
+	bool operator<(const SlotConfigWithCount &other) const {
+		// Sort by draw count descending, then by slot configs
+		if (draw_count != other.draw_count)
+			return draw_count > other.draw_count; // Reverse order for descending
 		if (!(vs_slot_config < other.vs_slot_config || other.vs_slot_config < vs_slot_config))
 			return ps_slot_config < other.ps_slot_config;
 		return vs_slot_config < other.vs_slot_config;
 	}
 };
 
+// Data for a single shader pair
+struct ShaderPairProfilingData {
+	UINT64 vertex_shader_hash;
+	UINT64 pixel_shader_hash;
+	// Track all slot configurations seen for this shader pair
+	std::map<std::pair<ShaderStageSlotConfig, ShaderStageSlotConfig>, unsigned> slot_configs;
+	unsigned total_draw_calls;
+	
+	ShaderPairProfilingData() : vertex_shader_hash(0), pixel_shader_hash(0), total_draw_calls(0) {}
+};
+
 // Profiling data for a tracked resource
 struct ShaderSlotProfilingData {
 	uint32_t tracked_resource_hash;  // The resource being profiled
-	// Map from unique slot configs to draw call count
-	std::map<ShaderPairSlotConfig, unsigned> slot_config_usage;
+	// Map from shader pair to its profiling data
+	std::map<ShaderPairKey, ShaderPairProfilingData> shader_pairs;
 	// Track which IBs this resource was used with
 	std::set<uint32_t> associated_index_buffers;
 };

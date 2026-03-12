@@ -353,46 +353,65 @@ void HackerContext::RecordShaderSlotProfiling()
 	if (G->mProfilingEnabledResources.empty())
 		return;
 	
-	// Get current shader resources for VS and PS stages
-	mOrigContext1->VSGetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, vs_views);
-	mOrigContext1->PSGetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, ps_views);
-	
-	// Check if any of the bound resources are being profiled
+	// Check if the current Index Buffer or Vertex Buffers are being profiled
 	bool found_profiled_resource = false;
 	uint32_t profiled_hash = 0;
 	
-	for (i = 0; i < D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT; i++) {
-		if (vs_views[i]) {
-			ID3D11Resource *resource = NULL;
-			vs_views[i]->GetResource(&resource);
-			if (resource) {
-				uint32_t hash = GetResourceHash(resource);
-				if (G->mProfilingEnabledResources.count(hash)) {
-					found_profiled_resource = true;
-					profiled_hash = hash;
-				}
-				resource->Release();
+	// Check Index Buffer first (mCurrentIndexBuffer is already a hash)
+	if (mCurrentIndexBuffer && G->mProfilingEnabledResources.count(mCurrentIndexBuffer)) {
+		found_profiled_resource = true;
+		profiled_hash = mCurrentIndexBuffer;
+	}
+	
+	// Check Vertex Buffers (mCurrentVertexBuffers are already hashes)
+	if (!found_profiled_resource) {
+		for (i = 0; i < D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT; i++) {
+			if (mCurrentVertexBuffers[i] && G->mProfilingEnabledResources.count(mCurrentVertexBuffers[i])) {
+				found_profiled_resource = true;
+				profiled_hash = mCurrentVertexBuffers[i];
+				break;
 			}
 		}
-		if (!found_profiled_resource && ps_views[i]) {
-			ID3D11Resource *resource = NULL;
-			ps_views[i]->GetResource(&resource);
-			if (resource) {
-				uint32_t hash = GetResourceHash(resource);
-				if (G->mProfilingEnabledResources.count(hash)) {
-					found_profiled_resource = true;
-					profiled_hash = hash;
+	}
+	
+	// Always get shader resources for recording texture slot configurations
+	mOrigContext1->VSGetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, vs_views);
+	mOrigContext1->PSGetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, ps_views);
+	
+	// If no IB/VB match, check shader resource views (textures)
+	if (!found_profiled_resource) {
+		for (i = 0; i < D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT; i++) {
+			if (vs_views[i]) {
+				ID3D11Resource *resource = NULL;
+				vs_views[i]->GetResource(&resource);
+				if (resource) {
+					uint32_t hash = GetResourceHash(resource);
+					if (G->mProfilingEnabledResources.count(hash)) {
+						found_profiled_resource = true;
+						profiled_hash = hash;
+					}
+					resource->Release();
 				}
-				resource->Release();
+			}
+			if (!found_profiled_resource && ps_views[i]) {
+				ID3D11Resource *resource = NULL;
+				ps_views[i]->GetResource(&resource);
+				if (resource) {
+					uint32_t hash = GetResourceHash(resource);
+					if (G->mProfilingEnabledResources.count(hash)) {
+						found_profiled_resource = true;
+						profiled_hash = hash;
+					}
+					resource->Release();
+				}
 			}
 		}
 	}
 	
 	if (found_profiled_resource) {
 		// Build the slot configuration for this draw call
-		ShaderPairSlotConfig config;
-		config.vertex_shader_hash = mCurrentVertexShader;
-		config.pixel_shader_hash = mCurrentPixelShader;
+		ShaderStageSlotConfig vs_slot_config;
+		ShaderStageSlotConfig ps_slot_config;
 		
 		// Record VS slot bindings
 		for (i = 0; i < D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT; i++) {
@@ -403,7 +422,7 @@ void HackerContext::RecordShaderSlotProfiling()
 					uint32_t hash = GetResourceHash(resource);
 					uint32_t orig_hash = GetOrigResourceHash(resource);
 					if (hash) {  // Only record if it has a hash
-						config.vs_slot_config.bound_resources.insert(
+						vs_slot_config.bound_resources.insert(
 							ShaderSlotResourceInfo(i, hash, orig_hash));
 					}
 					resource->Release();
@@ -420,7 +439,7 @@ void HackerContext::RecordShaderSlotProfiling()
 					uint32_t hash = GetResourceHash(resource);
 					uint32_t orig_hash = GetOrigResourceHash(resource);
 					if (hash) {  // Only record if it has a hash
-						config.ps_slot_config.bound_resources.insert(
+						ps_slot_config.bound_resources.insert(
 							ShaderSlotResourceInfo(i, hash, orig_hash));
 					}
 					resource->Release();
@@ -432,7 +451,22 @@ void HackerContext::RecordShaderSlotProfiling()
 		EnterCriticalSectionPretty(&G->mCriticalSection);
 		ShaderSlotProfilingData &data = G->mShaderSlotProfilingData[profiled_hash];
 		data.tracked_resource_hash = profiled_hash;
-		data.slot_config_usage[config]++;
+		
+		// Create shader pair key
+		ShaderPairKey pair_key;
+		pair_key.vertex_shader_hash = mCurrentVertexShader;
+		pair_key.pixel_shader_hash = mCurrentPixelShader;
+		
+		// Get or create shader pair data
+		ShaderPairProfilingData &pair_data = data.shader_pairs[pair_key];
+		pair_data.vertex_shader_hash = mCurrentVertexShader;
+		pair_data.pixel_shader_hash = mCurrentPixelShader;
+		pair_data.total_draw_calls++;
+		
+		// Record this specific slot configuration
+		auto slot_config_pair = std::make_pair(vs_slot_config, ps_slot_config);
+		pair_data.slot_configs[slot_config_pair]++;
+		
 		if (mCurrentIndexBuffer)
 			data.associated_index_buffers.insert(mCurrentIndexBuffer);
 		LeaveCriticalSection(&G->mCriticalSection);
@@ -839,8 +873,8 @@ void HackerContext::BeforeDraw(DrawContext &data)
 		if (G->DumpUsage)
 			RecordGraphicsShaderStats();
 		
-		// Record shader slot profiling if active and resources are being tracked
-		if (G->mShaderSlotProfilingActive && !G->mProfilingEnabledResources.empty())
+		// Record shader slot profiling if active globally OR if specific resources are being tracked
+		if ((G->mShaderSlotProfilingActive || !G->mProfilingEnabledResources.empty()))
 			RecordShaderSlotProfiling();
 
 		EnterCriticalSectionPretty(&G->mCriticalSection);
