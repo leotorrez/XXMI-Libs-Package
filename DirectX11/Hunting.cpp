@@ -272,6 +272,110 @@ void DumpUsage(wchar_t *dir)
 }
 
 
+// Expects the caller to have entered the critical section.
+void DumpShaderSlotProfiling(wchar_t *dir)
+{
+	wchar_t path[MAX_PATH];
+	char buf[256];
+	DWORD written;
+	
+	if (G->mShaderSlotProfilingData.empty())
+		return;
+	
+	if (dir) {
+		wcscpy(path, dir);
+		wcscat(path, L"\\");
+	} else {
+		if (!GetModuleFileName(migoto_handle, path, MAX_PATH))
+			return;
+		wcsrchr(path, L'\\')[1] = 0;
+	}
+	wcscat(path, L"ShaderSlotProfiling.txt");
+	
+	HANDLE f = CreateFile(path, GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (f == INVALID_HANDLE_VALUE) {
+		LogInfo("Error dumping ShaderSlotProfiling.txt\n");
+		return;
+	}
+	
+	sprintf_s(buf, 256, "Shader Slot Profiling Data\n");
+	WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+	sprintf_s(buf, 256, "==========================\n\n");
+	WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+	
+	for (auto &profiling_pair : G->mShaderSlotProfilingData) {
+		const ShaderSlotProfilingData &data = profiling_pair.second;
+		
+		sprintf_s(buf, 256, "Tracked Resource: %08x\n", data.tracked_resource_hash);
+		WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+		sprintf_s(buf, 256, "----------------------------------------\n");
+		WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+		
+		// Print associated index buffers
+		if (!data.associated_index_buffers.empty()) {
+			sprintf_s(buf, 256, "Associated Index Buffers: ");
+			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+			bool first = true;
+			for (uint32_t ib_hash : data.associated_index_buffers) {
+				if (!first) {
+					sprintf_s(buf, 256, ", ");
+					WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+				}
+				sprintf_s(buf, 256, "%08x", ib_hash);
+				WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+				first = false;
+			}
+			sprintf_s(buf, 256, "\n\n");
+			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+		}
+		
+		// Print unique shader pair + slot configurations
+		sprintf_s(buf, 256, "Unique Shader Pair Slot Configurations:\n\n");
+		WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+		
+		for (auto &config_pair : data.slot_config_usage) {
+			const ShaderPairSlotConfig &config = config_pair.first;
+			unsigned draw_count = config_pair.second;
+			
+			sprintf_s(buf, 256, "  VS: %016llx  PS: %016llx  (Draw calls: %u)\n",
+				config.vertex_shader_hash, config.pixel_shader_hash, draw_count);
+			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+			
+			// Print VS slot bindings
+			if (!config.vs_slot_config.bound_resources.empty()) {
+				sprintf_s(buf, 256, "    VS Slots:\n");
+				WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+				for (const ShaderSlotResourceInfo &slot_info : config.vs_slot_config.bound_resources) {
+					sprintf_s(buf, 256, "      t%u: %08x (orig: %08x)\n",
+						slot_info.slot, slot_info.resource_hash, slot_info.orig_hash);
+					WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+				}
+			}
+			
+			// Print PS slot bindings
+			if (!config.ps_slot_config.bound_resources.empty()) {
+				sprintf_s(buf, 256, "    PS Slots:\n");
+				WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+				for (const ShaderSlotResourceInfo &slot_info : config.ps_slot_config.bound_resources) {
+					sprintf_s(buf, 256, "      t%u: %08x (orig: %08x)\n",
+						slot_info.slot, slot_info.resource_hash, slot_info.orig_hash);
+					WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+				}
+			}
+			
+			sprintf_s(buf, 256, "\n");
+			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+		}
+		
+		sprintf_s(buf, 256, "\n\n");
+		WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+	}
+	
+	CloseHandle(f);
+	LogInfo("Dumped ShaderSlotProfiling.txt\n");
+}
+
+
 // Make a snapshot of the backbuffer, with the current shader disabled, as a good piece
 // of documentation.  The name will include the hash code, making a direct shader reference.
 //
@@ -1223,6 +1327,43 @@ static void _AnalyseFrameStop()
 	LogOverlayW(LOG_INFO, L"Frame analysis saved to %ls\n", G->ANALYSIS_PATH);
 }
 
+static void ToggleShaderSlotProfiling(HackerDevice *device, void *private_data)
+{
+	EnterCriticalSectionPretty(&G->mCriticalSection);
+	
+	if (G->mShaderSlotProfilingActive) {
+		// Stop profiling and dump results
+		G->mShaderSlotProfilingActive = false;
+		
+		// Count total stats
+		int totalDrawCalls = 0;
+		int totalShaderPairs = 0;
+		int totalConfigs = 0;
+		
+		for (auto& entry : G->mShaderSlotProfilingData) {
+			totalConfigs += (int)entry.second.slot_config_usage.size();
+			for (auto& config : entry.second.slot_config_usage) {
+				totalDrawCalls += config.second;
+			}
+		}
+		totalShaderPairs = totalConfigs;  // Each unique config is essentially a shader pair instance
+		
+		DumpShaderSlotProfiling(G->ANALYSIS_PATH);
+		
+		LogOverlay(LOG_NOTICE, "Shader slot profiling STOPPED. Captured: %d draw calls, %d shader pairs, %d unique configs\n",
+			totalDrawCalls, totalShaderPairs, totalConfigs);
+	} else {
+		// Start profiling - clear previous data
+		G->mShaderSlotProfilingActive = true;
+		G->mShaderSlotProfilingData.clear();
+		
+		LogOverlay(LOG_NOTICE, "Shader slot profiling STARTED. Tracking %d resources...\n",
+			(int)G->mProfilingEnabledResources.size());
+	}
+	
+	LeaveCriticalSection(&G->mCriticalSection);
+}
+
 static void AnalyseFrame(HackerDevice *device, void *private_data)
 {
 	FrameAnalysisContext *factx = NULL;
@@ -1964,6 +2105,8 @@ void ParseHuntingSection()
 	RegisterIniKeyBinding(L"Hunting", L"mark_rendertarget", MarkRenderTarget, NULL, noRepeat, NULL);
 
 	RegisterIniKeyBinding(L"Hunting", L"done_hunting", DoneHunting, NULL, noRepeat, NULL);
+
+	RegisterIniKeyBinding(L"Hunting", L"toggle_shader_slot_profiling", ToggleShaderSlotProfiling, NULL, noRepeat, NULL);
 
 	RegisterIniKeyBinding(L"Hunting", L"reload_fixes", ReloadFixes, NULL, noRepeat, NULL);
 

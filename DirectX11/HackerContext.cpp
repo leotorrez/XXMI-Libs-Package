@@ -343,6 +343,110 @@ void HackerContext::RecordComputeShaderStats()
 	LeaveCriticalSection(&G->mCriticalSection);
 }
 
+void HackerContext::RecordShaderSlotProfiling()
+{
+	ID3D11ShaderResourceView *vs_views[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {0};
+	ID3D11ShaderResourceView *ps_views[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {0};
+	UINT i;
+	
+	// Check if there are any resources being profiled
+	if (G->mProfilingEnabledResources.empty())
+		return;
+	
+	// Get current shader resources for VS and PS stages
+	mOrigContext1->VSGetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, vs_views);
+	mOrigContext1->PSGetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, ps_views);
+	
+	// Check if any of the bound resources are being profiled
+	bool found_profiled_resource = false;
+	uint32_t profiled_hash = 0;
+	
+	for (i = 0; i < D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT; i++) {
+		if (vs_views[i]) {
+			ID3D11Resource *resource = NULL;
+			vs_views[i]->GetResource(&resource);
+			if (resource) {
+				uint32_t hash = GetResourceHash(resource);
+				if (G->mProfilingEnabledResources.count(hash)) {
+					found_profiled_resource = true;
+					profiled_hash = hash;
+				}
+				resource->Release();
+			}
+		}
+		if (!found_profiled_resource && ps_views[i]) {
+			ID3D11Resource *resource = NULL;
+			ps_views[i]->GetResource(&resource);
+			if (resource) {
+				uint32_t hash = GetResourceHash(resource);
+				if (G->mProfilingEnabledResources.count(hash)) {
+					found_profiled_resource = true;
+					profiled_hash = hash;
+				}
+				resource->Release();
+			}
+		}
+	}
+	
+	if (found_profiled_resource) {
+		// Build the slot configuration for this draw call
+		ShaderPairSlotConfig config;
+		config.vertex_shader_hash = mCurrentVertexShader;
+		config.pixel_shader_hash = mCurrentPixelShader;
+		
+		// Record VS slot bindings
+		for (i = 0; i < D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT; i++) {
+			if (vs_views[i]) {
+				ID3D11Resource *resource = NULL;
+				vs_views[i]->GetResource(&resource);
+				if (resource) {
+					uint32_t hash = GetResourceHash(resource);
+					uint32_t orig_hash = GetOrigResourceHash(resource);
+					if (hash) {  // Only record if it has a hash
+						config.vs_slot_config.bound_resources.insert(
+							ShaderSlotResourceInfo(i, hash, orig_hash));
+					}
+					resource->Release();
+				}
+			}
+		}
+		
+		// Record PS slot bindings
+		for (i = 0; i < D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT; i++) {
+			if (ps_views[i]) {
+				ID3D11Resource *resource = NULL;
+				ps_views[i]->GetResource(&resource);
+				if (resource) {
+					uint32_t hash = GetResourceHash(resource);
+					uint32_t orig_hash = GetOrigResourceHash(resource);
+					if (hash) {  // Only record if it has a hash
+						config.ps_slot_config.bound_resources.insert(
+							ShaderSlotResourceInfo(i, hash, orig_hash));
+					}
+					resource->Release();
+				}
+			}
+		}
+		
+		// Record the configuration and increment draw call count
+		EnterCriticalSectionPretty(&G->mCriticalSection);
+		ShaderSlotProfilingData &data = G->mShaderSlotProfilingData[profiled_hash];
+		data.tracked_resource_hash = profiled_hash;
+		data.slot_config_usage[config]++;
+		if (mCurrentIndexBuffer)
+			data.associated_index_buffers.insert(mCurrentIndexBuffer);
+		LeaveCriticalSection(&G->mCriticalSection);
+	}
+	
+	// Release all views
+	for (i = 0; i < D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT; i++) {
+		if (vs_views[i])
+			vs_views[i]->Release();
+		if (ps_views[i])
+			ps_views[i]->Release();
+	}
+}
+
 void HackerContext::RecordRenderTargetInfo(ID3D11RenderTargetView *target, UINT view_num)
 {
 	D3D11_RENDER_TARGET_VIEW_DESC desc;
@@ -536,8 +640,13 @@ void HackerContext::DeferredShaderReplacement(ID3D11DeviceChild *shader, UINT64 
 		goto out_drop;
 	orig_info = &orig_info_i->second;
 
-	if (!orig_info->deferred_replacement_candidate || orig_info->deferred_replacement_processed)
+	if (!orig_info->deferred_replacement_candidate || orig_info->deferred_replacement_processed) {
+		if (!orig_info->deferred_replacement_candidate)
+			LogInfo("  Shader not a deferred_replacement_candidate, skipping\n");
+		if (orig_info->deferred_replacement_processed)
+			LogInfo("  Shader already processed, skipping\n");
 		goto out_drop;
+	}
 
 	// Remember that we have analysed this one so we don't check it again
 	// (until config reload) regardless of whether we patch it or not:
@@ -545,16 +654,12 @@ void HackerContext::DeferredShaderReplacement(ID3D11DeviceChild *shader, UINT64 
 
 	switch (load_shader_regex_cache(hash, shader_type, &patched_bytecode, &tagline)) {
 	case ShaderRegexCache::NO_MATCH:
-		LogInfo("%S %016I64x has cached ShaderRegex miss\n", shader_type, hash);
 		goto out_drop;
 	case ShaderRegexCache::MATCH:
-		LogInfo("Loaded %S %016I64x command list from ShaderRegex cache\n", shader_type, hash);
 		goto out_drop;
 	case ShaderRegexCache::PATCH:
-		LogInfo("Loaded %S %016I64x bytecode from ShaderRegex cache\n", shader_type, hash);
 		break;
 	case ShaderRegexCache::NO_CACHE:
-		LogInfo("Performing deferred shader analysis on %S %016I64x...\n", shader_type, hash);
 
 		asm_text = BinaryToAsmText(orig_info->byteCode->GetBufferPointer(),
 				orig_info->byteCode->GetBufferSize(),
@@ -572,6 +677,8 @@ void HackerContext::DeferredShaderReplacement(ID3D11DeviceChild *shader, UINT64 
 
 		if (!patch_regex) {
 			LogInfo("Patch did not apply\n");
+			// Finalize cache entry for match-only shaders (matched but not patched)
+			finalize_shader_regex_cache(hash, shader_type);
 			goto out_drop;
 		}
 
@@ -731,6 +838,10 @@ void HackerContext::BeforeDraw(DrawContext &data)
 		// so only do it if dump_usage is enabled.
 		if (G->DumpUsage)
 			RecordGraphicsShaderStats();
+		
+		// Record shader slot profiling if active and resources are being tracked
+		if (G->mShaderSlotProfilingActive && !G->mProfilingEnabledResources.empty())
+			RecordShaderSlotProfiling();
 
 		EnterCriticalSectionPretty(&G->mCriticalSection);
 		{

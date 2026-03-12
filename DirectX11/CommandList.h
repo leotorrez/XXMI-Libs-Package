@@ -1047,6 +1047,21 @@ public:
 	bool noop(bool post, bool ignore_cto_pre, bool ignore_cto_post) override;
 };
 
+class ProfileShaderSlotsCommand : public CommandListCommand {
+public:
+	// Target resource to enable/disable profiling for
+	ResourceCopyTarget target;
+	bool enable;  // true to enable profiling, false to disable/clear
+	bool dump_now;  // if true, dump profiling data immediately
+
+	ProfileShaderSlotsCommand() :
+		enable(true),
+		dump_now(false)
+	{}
+
+	void run(CommandListState*) override;
+};
+
 enum class DrawCommandType {
 	INVALID,
 	DRAW,

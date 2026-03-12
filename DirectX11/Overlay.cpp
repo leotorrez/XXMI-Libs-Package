@@ -778,9 +778,40 @@ void Overlay::DrawOverlay(void)
 				DrawOutlinedString(mFont.get(), osdString, textPosition, DirectX::Colors::LimeGreen);
 				y += strSize.y;
 
-				DrawShaderInfoLines(&y);
+			DrawShaderInfoLines(&y);
 
-				// Bottom of screen
+			// Shader Slot Profiling status
+			if (G->mShaderSlotProfilingActive || !G->mShaderSlotProfilingData.empty()) {
+				int totalDrawCalls = 0;
+				int totalShaderPairs = 0;
+				int totalConfigs = 0;
+				
+				for (auto& entry : G->mShaderSlotProfilingData) {
+					totalConfigs += (int)entry.second.slot_config_usage.size();
+					for (auto& config : entry.second.slot_config_usage) {
+						totalDrawCalls += config.second;
+					}
+				}
+				totalShaderPairs = totalConfigs;  // Each unique config is essentially a shader pair instance
+				
+				if (G->mShaderSlotProfilingActive) {
+					swprintf_s(osdString, maxstring, L"[Slot Profiling ACTIVE] Resources: %d | Draws: %d | Shaders: %d | Configs: %d",
+						(int)G->mProfilingEnabledResources.size(), totalDrawCalls, totalShaderPairs, totalConfigs);
+					strSize = mFont->MeasureString(osdString);
+					textPosition = Vector2(float(mResolution.x - strSize.x) / 2, y);
+					DrawOutlinedString(mFont.get(), osdString, textPosition, DirectX::Colors::Yellow);
+					y += strSize.y;
+				} else if (!G->mShaderSlotProfilingData.empty()) {
+					swprintf_s(osdString, maxstring, L"[Slot Profiling Data] Draws: %d | Shaders: %d | Configs: %d (Press Shift+F8 to clear)",
+						totalDrawCalls, totalShaderPairs, totalConfigs);
+					strSize = mFont->MeasureString(osdString);
+					textPosition = Vector2(float(mResolution.x - strSize.x) / 2, y);
+					DrawOutlinedString(mFont.get(), osdString, textPosition, DirectX::Colors::Cyan);
+					y += strSize.y;
+				}
+			}
+
+			// Bottom of screen
 				CreateInfoString(osdString);
 				strSize = mFont->MeasureString(osdString);
 				textPosition = Vector2(float(mResolution.x - strSize.x) / 2, float(mResolution.y - strSize.y - 10));

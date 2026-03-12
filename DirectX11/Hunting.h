@@ -20,3 +20,4 @@ public:
 void TimeoutHuntingBuffers();
 void ParseHuntingSection();
 void DumpUsage(wchar_t *dir);
+void DumpShaderSlotProfiling(wchar_t *dir);

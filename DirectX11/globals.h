@@ -26,6 +26,9 @@ extern HINSTANCE migoto_handle;
 class CommandListCommand;
 class CommandList;
 
+// Forward declaration for split shader cache
+struct SplitShaderCache;
+
 
 enum HuntingMode {
 	HUNTING_MODE_DISABLED = 0,
@@ -361,6 +364,62 @@ struct ShaderInfoData
 	std::set<ResourceSnapshot> DepthTargets;
 };
 
+// Shader Slot Profiling Structures
+// Used to track texture slot configurations per shader pair for profiling
+struct ShaderSlotResourceInfo {
+	UINT slot;
+	uint32_t resource_hash;
+	uint32_t orig_hash;
+	
+	ShaderSlotResourceInfo(UINT slot, uint32_t hash, uint32_t orig_hash) :
+		slot(slot), resource_hash(hash), orig_hash(orig_hash)
+	{}
+	
+	bool operator<(const ShaderSlotResourceInfo &other) const {
+		if (slot != other.slot)
+			return slot < other.slot;
+		if (orig_hash != other.orig_hash)
+			return orig_hash < other.orig_hash;
+		return resource_hash < other.resource_hash;
+	}
+};
+
+// Represents a unique slot configuration for a shader stage
+struct ShaderStageSlotConfig {
+	std::set<ShaderSlotResourceInfo> bound_resources;
+	
+	bool operator<(const ShaderStageSlotConfig &other) const {
+		return bound_resources < other.bound_resources;
+	}
+};
+
+// Key to identify a specific shader pair (VS+PS) and their slot configuration
+struct ShaderPairSlotConfig {
+	UINT64 vertex_shader_hash;
+	UINT64 pixel_shader_hash;
+	ShaderStageSlotConfig vs_slot_config;
+	ShaderStageSlotConfig ps_slot_config;
+	
+	bool operator<(const ShaderPairSlotConfig &other) const {
+		if (vertex_shader_hash != other.vertex_shader_hash)
+			return vertex_shader_hash < other.vertex_shader_hash;
+		if (pixel_shader_hash != other.pixel_shader_hash)
+			return pixel_shader_hash < other.pixel_shader_hash;
+		if (!(vs_slot_config < other.vs_slot_config || other.vs_slot_config < vs_slot_config))
+			return ps_slot_config < other.ps_slot_config;
+		return vs_slot_config < other.vs_slot_config;
+	}
+};
+
+// Profiling data for a tracked resource
+struct ShaderSlotProfilingData {
+	uint32_t tracked_resource_hash;  // The resource being profiled
+	// Map from unique slot configs to draw call count
+	std::map<ShaderPairSlotConfig, unsigned> slot_config_usage;
+	// Track which IBs this resource was used with
+	std::set<uint32_t> associated_index_buffers;
+};
+
 enum class GetResolutionFrom {
 	INVALID       = -1,
 	SWAP_CHAIN,
@@ -464,6 +523,14 @@ struct Globals
 	bool disassemble_undecipherable_custom_data;
 	bool patch_cb_offsets;
 	int recursive_include;
+	
+	// Split shader cache options
+	bool use_split_cache;
+	bool use_binary_cache;
+	uint32_t split_cache_shaders_per_block;
+	bool cache_stats_on_startup;
+	bool cache_verify_integrity;
+	
 	uint32_t ZBufferHashToInject;
 	DecompilerSettings decompiler_settings;
 	bool DumpUsage;
@@ -603,6 +670,14 @@ struct Globals
 	std::map<UINT64, ShaderInfoData> mPixelShaderInfo;			// std::map so that ShaderUsage.txt is sorted - lookup time is O(log N)
 	std::map<UINT64, ShaderInfoData> mComputeShaderInfo;		// std::map so that ShaderUsage.txt is sorted - lookup time is O(log N)
 
+	// Shader Slot Profiling
+	// Maps tracked resource hash to its profiling data
+	std::map<uint32_t, ShaderSlotProfilingData> mShaderSlotProfilingData;
+	// Set of resources currently being profiled (for quick lookup)
+	std::set<uint32_t> mProfilingEnabledResources;
+	// Active profiling state (toggled by key binding)
+	bool mShaderSlotProfilingActive;
+
 	Globals() :
 
 		mSelectedRenderTargetSnapshot(0),
@@ -676,8 +751,16 @@ struct Globals
 
 		marking_mode(MarkingMode::INVALID),
 		marking_actions(MarkingAction::INVALID),
+		mShaderSlotProfilingActive(false),
 		ZBufferHashToInject(0),
 		SCISSOR_DISABLE(0),
+		
+		// Split shader cache initialization
+		use_split_cache(false),
+		use_binary_cache(false),
+		split_cache_shaders_per_block(100),
+		cache_stats_on_startup(false),
+		cache_verify_integrity(false),
 
 		load_library_redirect(2),
 		enable_hooks(EnableHooks::INVALID),
@@ -770,6 +853,9 @@ static struct TLS* get_tls()
 }
 
 extern Globals *G;
+
+// Global split shader cache pointer
+extern SplitShaderCache *G_SPLIT_SHADER_CACHE;
 
 static inline ShaderMap::iterator lookup_shader_hash(ID3D11DeviceChild *shader)
 {

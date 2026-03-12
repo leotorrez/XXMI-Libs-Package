@@ -436,6 +436,53 @@ static bool ParseCheckTextureOverride(const wchar_t *section,
 	return false;
 }
 
+static bool ParseProfileShaderSlots(const wchar_t *section,
+		const wchar_t *key, wstring *val,
+		CommandList *explicit_command_list,
+		CommandList *pre_command_list,
+		CommandList *post_command_list,
+		const wstring *ini_namespace)
+{
+	ProfileShaderSlotsCommand *operation = new ProfileShaderSlotsCommand();
+	wstring target_str = *val;
+	wstring action = L"enable";
+	
+	// Check if there's an action specified (enable/disable/dump)
+	size_t space_pos = val->find(L' ');
+	if (space_pos != wstring::npos) {
+		target_str = val->substr(0, space_pos);
+		action = val->substr(space_pos + 1);
+		// Trim whitespace
+		action.erase(0, action.find_first_not_of(L" \t"));
+		action.erase(action.find_last_not_of(L" \t") + 1);
+	}
+	
+	// Parse the target resource
+	int ret = operation->target.ParseTarget(target_str.c_str(), true, ini_namespace);
+	if (!ret) {
+		delete operation;
+		return false;
+	}
+	
+	// Parse the action
+	if (!_wcsicmp(action.c_str(), L"enable")) {
+		operation->enable = true;
+		operation->dump_now = false;
+	} else if (!_wcsicmp(action.c_str(), L"disable")) {
+		operation->enable = false;
+		operation->dump_now = false;
+	} else if (!_wcsicmp(action.c_str(), L"dump")) {
+		operation->enable = true;
+		operation->dump_now = true;
+	} else {
+		// Default to enable if not recognized
+		operation->enable = true;
+		operation->dump_now = false;
+	}
+	
+	return AddCommandToList(operation, explicit_command_list, NULL, pre_command_list, post_command_list, section, key, val);
+}
+
 static bool ParseResetPerFrameLimits(const wchar_t *section,
 		const wchar_t *key, wstring *val,
 		CommandList *explicit_command_list,
@@ -940,6 +987,9 @@ bool ParseCommandListGeneralCommands(const wchar_t *section,
 	if (!wcscmp(key, L"checktextureoverride"))
 		return ParseCheckTextureOverride(section, key, val, explicit_command_list, pre_command_list, post_command_list, ini_namespace);
 
+	if (!wcscmp(key, L"profile_shader_slots"))
+		return ParseProfileShaderSlots(section, key, val, explicit_command_list, pre_command_list, post_command_list, ini_namespace);
+
 	if (!wcscmp(key, L"run")) {
 		if (!wcsncmp(val->c_str(), L"customshader", 12) || !wcsncmp(val->c_str(), L"builtincustomshader", 19))
 			return ParseRunShader(section, key, val, explicit_command_list, pre_command_list, post_command_list, ini_namespace);
@@ -1033,6 +1083,47 @@ bool CheckTextureOverrideCommand::noop(bool post, bool ignore_cto_pre, bool igno
 	if (post)
 		return ignore_cto_post;
 	return ignore_cto_pre;
+}
+
+void ProfileShaderSlotsCommand::run(CommandListState *state)
+{
+	ID3D11Resource *resource = NULL;
+	uint32_t hash;
+
+	COMMAND_LIST_LOG(state, "%S\n", ini_line.c_str());
+
+	// Get the resource to profile
+	resource = target.GetResource(state, NULL, NULL, NULL, NULL, NULL);
+	if (!resource) {
+		COMMAND_LIST_LOG(state, "  profile_shader_slots: resource not found\n");
+		return;
+	}
+
+	hash = GetResourceHash(resource);
+	if (!hash) {
+		COMMAND_LIST_LOG(state, "  profile_shader_slots: resource has no hash\n");
+		return;
+	}
+
+	EnterCriticalSectionPretty(&G->mCriticalSection);
+
+	if (dump_now) {
+		// Dump profiling data for this resource
+		COMMAND_LIST_LOG(state, "  profile_shader_slots: dumping data for hash %08x\n", hash);
+		// The actual dump is handled by a separate function called from elsewhere
+		// For now just log it - dump function will be implemented separately
+	} else if (enable) {
+		// Enable profiling for this resource
+		G->mProfilingEnabledResources.insert(hash);
+		COMMAND_LIST_LOG(state, "  profile_shader_slots: enabled for hash %08x\n", hash);
+	} else {
+		// Disable profiling and clear data for this resource
+		G->mProfilingEnabledResources.erase(hash);
+		G->mShaderSlotProfilingData.erase(hash);
+		COMMAND_LIST_LOG(state, "  profile_shader_slots: disabled for hash %08x\n", hash);
+	}
+
+	LeaveCriticalSection(&G->mCriticalSection);
 }
 
 ClearViewCommand::ClearViewCommand() :

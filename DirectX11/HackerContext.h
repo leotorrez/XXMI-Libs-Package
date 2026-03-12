@@ -162,6 +162,7 @@ private:
 			ID3D11ShaderResourceView *views[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT]);
 	void RecordGraphicsShaderStats();
 	void RecordComputeShaderStats();
+	void RecordShaderSlotProfiling();
 	void RecordPeerShaders(std::set<UINT64> *PeerShaders, UINT64 this_shader_hash);
 	void RecordRenderTargetInfo(ID3D11RenderTargetView *target, UINT view_num);
 	ID3D11Resource* RecordResourceViewStats(ID3D11View *view, std::set<uint32_t> *resource_info);
