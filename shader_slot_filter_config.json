@@ -1,0 +1,20 @@
+{
+  "textures": {
+    "1bb147fa": "VarkaDiffuse_1",
+    "aaeadaab": "VarkaDiffuse_2",
+    "b7ff7a6e": "VarkaNormalMap",
+    "022a5b44": "UnknownTexture_1",
+    "6ec43995": "UnknownTexture_2",
+    "c8f300a2": "UnknownTexture_3",
+    "53b840d8": "UnknownTexture_4"
+  },
+  "filter_mode": "any",
+  "_comments": {
+    "filter_mode_options": [
+      "any - Show configs containing ANY of the tracked textures (most permissive)",
+      "all - Show configs containing ALL of the tracked textures",
+      "only - Show configs containing ONLY tracked textures (most restrictive)"
+    ],
+    "usage": "Replace the hash values with your actual texture hashes and give them meaningful names"
+  }
+}
