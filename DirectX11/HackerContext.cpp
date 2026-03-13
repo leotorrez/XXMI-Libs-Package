@@ -709,12 +709,10 @@ void HackerContext::DeferredShaderReplacement(ID3D11DeviceChild *shader, UINT64 
 			goto out_drop;
 		}
 
-		if (!patch_regex) {
-			LogInfo("Patch did not apply\n");
-			// Finalize cache entry for match-only shaders (matched but not patched)
-			finalize_shader_regex_cache(hash, shader_type);
-			goto out_drop;
-		}
+	if (!patch_regex) {
+		LogInfo("Patch did not apply\n");
+		goto out_drop;
+	}
 
 		// No longer logging this since we can output to ShaderFixes
 		// via hunting if marking_actions = regex, or it could be
