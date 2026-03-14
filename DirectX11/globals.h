@@ -362,6 +362,7 @@ struct ShaderInfoData
 	std::vector<std::set<ResourceSnapshot>> RenderTargets;
 	std::map<int, std::set<ResourceSnapshot>> UAVs;
 	std::set<ResourceSnapshot> DepthTargets;
+	std::string shader_name;  // Debug name for the shader (if available)
 };
 
 // Shader Slot Profiling Structures
@@ -370,9 +371,10 @@ struct ShaderSlotResourceInfo {
 	UINT slot;
 	uint32_t resource_hash;
 	uint32_t orig_hash;
+	std::string debug_name;  // Debug name from DirectX (if available)
 	
-	ShaderSlotResourceInfo(UINT slot, uint32_t hash, uint32_t orig_hash) :
-		slot(slot), resource_hash(hash), orig_hash(orig_hash)
+	ShaderSlotResourceInfo(UINT slot, uint32_t hash, uint32_t orig_hash, const std::string& name = "") :
+		slot(slot), resource_hash(hash), orig_hash(orig_hash), debug_name(name)
 	{}
 	
 	bool operator<(const ShaderSlotResourceInfo &other) const {
@@ -380,7 +382,9 @@ struct ShaderSlotResourceInfo {
 			return slot < other.slot;
 		if (orig_hash != other.orig_hash)
 			return orig_hash < other.orig_hash;
-		return resource_hash < other.resource_hash;
+		if (resource_hash != other.resource_hash)
+			return resource_hash < other.resource_hash;
+		return debug_name < other.debug_name;
 	}
 };
 
@@ -425,6 +429,8 @@ struct SlotConfigWithCount {
 struct ShaderPairProfilingData {
 	UINT64 vertex_shader_hash;
 	UINT64 pixel_shader_hash;
+	std::string vertex_shader_name;  // Debug name for vertex shader
+	std::string pixel_shader_name;   // Debug name for pixel shader
 	// Track all slot configurations seen for this shader pair
 	std::map<std::pair<ShaderStageSlotConfig, ShaderStageSlotConfig>, unsigned> slot_configs;
 	unsigned total_draw_calls;

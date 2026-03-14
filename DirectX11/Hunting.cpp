@@ -29,6 +29,45 @@ DWORD castStrLen(const char* string)
 	return (DWORD)strlen(string);
 }
 
+// Helper function to get the debug object name from a DirectX resource
+// Returns true if a name was found, false otherwise
+static bool GetDebugObjectName(ID3D11DeviceChild* resource, char* name, UINT name_size)
+{
+	if (!resource)
+		return false;
+
+	// WKPDID_D3DDebugObjectName is the standard GUID for debug object names
+	// It's defined in d3dcommon.h
+	static const GUID WKPDID_D3DDebugObjectName = { 0x429b8c22, 0x9188, 0x4b0c, { 0x87, 0x42, 0xac, 0xb0, 0xbf, 0x85, 0xc2, 0x00 } };
+	
+	UINT size = name_size - 1; // Leave room for null terminator
+	HRESULT hr = resource->GetPrivateData(WKPDID_D3DDebugObjectName, &size, name);
+	
+	if (SUCCEEDED(hr) && size > 0) {
+		name[size] = '\0'; // Ensure null termination
+		return true;
+	}
+	
+	return false;
+}
+
+// Helper function to get the debug object name from a resource by handle
+static bool GetResourceDebugName(ID3D11Resource* resource, char* name, UINT name_size)
+{
+	return GetDebugObjectName(resource, name, name_size);
+}
+
+// Helper function to get the debug object name for a shader by hash
+// Looks up the shader by hash in the appropriate shader info map
+template<typename ShaderType>
+static bool GetShaderDebugName(UINT64 hash, std::map<UINT64, ShaderInfoData>* shader_map, char* name, UINT name_size)
+{
+	// For now, we just format the hash as the name
+	// In a future enhancement, we could look up actual shader objects
+	// and extract their debug names if available
+	return false;
+}
+
 static void DumpUsageResourceInfo(HANDLE f, std::set<uint32_t> *hashes, char *tag)
 {
 	std::set<uint32_t>::iterator orig_hash;
@@ -151,6 +190,7 @@ static void DumpUsageResourceInfo(HANDLE f, std::set<uint32_t> *hashes, char *ta
 static void DumpUsageRegister(HANDLE f, char *tag, int id, const ResourceSnapshot &info)
 {
 	char buf[256];
+	char name[256];
 	DWORD written;
 
 	sprintf(buf, "  <%s", tag);
@@ -177,6 +217,12 @@ static void DumpUsageRegister(HANDLE f, char *tag, int id, const ResourceSnapsho
 	} catch (std::out_of_range) {
 	}
 
+	// Try to get the debug name for this resource
+	if (GetResourceDebugName(info.handle, name, sizeof(name))) {
+		sprintf(buf, " name=\"%s\"", name);
+		WriteFile(f, buf, castStrLen(buf), &written, 0);
+	}
+
 	sprintf(buf, ">%08lx</%s>\n", info.hash, tag);
 	WriteFile(f, buf, castStrLen(buf), &written, 0);
 }
@@ -194,7 +240,16 @@ static void DumpShaderUsageInfo(HANDLE f, std::map<UINT64, ShaderInfoData> *info
 	int pos;
 
 	for (i = info_map->begin(); i != info_map->end(); ++i) {
-		sprintf(buf, "<%s hash=\"%016llx\">\n", tag, i->first);
+		sprintf(buf, "<%s hash=\"%016llx\"", tag, i->first);
+		WriteFile(f, buf, castStrLen(buf), &written, 0);
+		
+		// Add shader name if available
+		if (!i->second.shader_name.empty()) {
+			sprintf(buf, " name=\"%s\"", i->second.shader_name.c_str());
+			WriteFile(f, buf, castStrLen(buf), &written, 0);
+		}
+		
+		sprintf(buf, ">\n");
 		WriteFile(f, buf, castStrLen(buf), &written, 0);
 
 		// Does not apply to compute shaders:
@@ -336,9 +391,21 @@ void DumpShaderSlotProfiling(wchar_t *dir)
 		for (auto &pair_entry : data.shader_pairs) {
 			const ShaderPairProfilingData &pair_data = pair_entry.second;
 			
-			sprintf_s(buf, 256, "  VS: %016llx  PS: %016llx\n",
-				pair_data.vertex_shader_hash, pair_data.pixel_shader_hash);
+			sprintf_s(buf, 256, "  VS: %016llx", pair_data.vertex_shader_hash);
 			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+			if (!pair_data.vertex_shader_name.empty()) {
+				sprintf_s(buf, 256, " [%s]", pair_data.vertex_shader_name.c_str());
+				WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+			}
+			sprintf_s(buf, 256, "\n  PS: %016llx", pair_data.pixel_shader_hash);
+			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+			if (!pair_data.pixel_shader_name.empty()) {
+				sprintf_s(buf, 256, " [%s]", pair_data.pixel_shader_name.c_str());
+				WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+			}
+			sprintf_s(buf, 256, "\n");
+			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
+			
 			sprintf_s(buf, 256, "  Total Draw Calls: %u\n", pair_data.total_draw_calls);
 			WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
 			sprintf_s(buf, 256, "  Unique Slot Configurations: %u\n\n", (unsigned)pair_data.slot_configs.size());
@@ -358,8 +425,14 @@ void DumpShaderSlotProfiling(wchar_t *dir)
 					sprintf_s(buf, 256, "      VS Slots:\n");
 					WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
 					for (const ShaderSlotResourceInfo &slot_info : vs_config.bound_resources) {
-						sprintf_s(buf, 256, "        t%u: %08x (orig: %08x)\n",
-							slot_info.slot, slot_info.resource_hash, slot_info.orig_hash);
+						if (!slot_info.debug_name.empty()) {
+							sprintf_s(buf, 256, "        t%u: %08x (orig: %08x) [%s]\n",
+								slot_info.slot, slot_info.resource_hash, slot_info.orig_hash, 
+								slot_info.debug_name.c_str());
+						} else {
+							sprintf_s(buf, 256, "        t%u: %08x (orig: %08x)\n",
+								slot_info.slot, slot_info.resource_hash, slot_info.orig_hash);
+						}
 						WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
 					}
 				}
@@ -369,8 +442,14 @@ void DumpShaderSlotProfiling(wchar_t *dir)
 					sprintf_s(buf, 256, "      PS Slots:\n");
 					WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
 					for (const ShaderSlotResourceInfo &slot_info : ps_config.bound_resources) {
-						sprintf_s(buf, 256, "        t%u: %08x (orig: %08x)\n",
-							slot_info.slot, slot_info.resource_hash, slot_info.orig_hash);
+						if (!slot_info.debug_name.empty()) {
+							sprintf_s(buf, 256, "        t%u: %08x (orig: %08x) [%s]\n",
+								slot_info.slot, slot_info.resource_hash, slot_info.orig_hash,
+								slot_info.debug_name.c_str());
+						} else {
+							sprintf_s(buf, 256, "        t%u: %08x (orig: %08x)\n",
+								slot_info.slot, slot_info.resource_hash, slot_info.orig_hash);
+						}
 						WriteFile(f, buf, (DWORD)strlen(buf), &written, 0);
 					}
 				}

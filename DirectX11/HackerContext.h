@@ -157,7 +157,7 @@ private:
 		UINT StartSlot,
 		UINT NumViews,
 		ID3D11ShaderResourceView **ppShaderResourceViews)>
-	void RecordShaderResourceUsage(std::map<UINT64, ShaderInfoData> &ShaderInfo, UINT64 currentShader);
+	void RecordShaderResourceUsage(std::map<UINT64, ShaderInfoData> &ShaderInfo, UINT64 currentShader, ID3D11DeviceChild *shaderHandle);
 	void _RecordShaderResourceUsage(ShaderInfoData *shader_info,
 			ID3D11ShaderResourceView *views[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT]);
 	void RecordGraphicsShaderStats();

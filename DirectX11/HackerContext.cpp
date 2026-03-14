@@ -27,6 +27,26 @@
 
 // -----------------------------------------------------------------------------------------------
 
+// Forward declaration for GetDebugObjectName helper function
+static bool GetDebugObjectName(ID3D11DeviceChild* resource, char* name, UINT name_size)
+{
+	if (!resource)
+		return false;
+
+	// WKPDID_D3DDebugObjectName is the standard GUID for debug object names
+	static const GUID WKPDID_D3DDebugObjectName = { 0x429b8c22, 0x9188, 0x4b0c, { 0x87, 0x42, 0xac, 0xb0, 0xbf, 0x85, 0xc2, 0x00 } };
+	
+	UINT size = name_size - 1; // Leave room for null terminator
+	HRESULT hr = resource->GetPrivateData(WKPDID_D3DDebugObjectName, &size, name);
+	
+	if (SUCCEEDED(hr) && size > 0) {
+		name[size] = '\0'; // Ensure null termination
+		return true;
+	}
+	
+	return false;
+}
+
 HackerContext* HackerContextFactory(ID3D11Device1 *pDevice1, ID3D11DeviceContext1 *pContext1)
 {
 	// We can either create a straight HackerContext, or a souped up
@@ -218,7 +238,7 @@ template <void (__stdcall ID3D11DeviceContext::*GetShaderResources)(THIS_
 		UINT StartSlot,
 		UINT NumViews,
 		ID3D11ShaderResourceView **ppShaderResourceViews)>
-void HackerContext::RecordShaderResourceUsage(std::map<UINT64, ShaderInfoData> &ShaderInfo, UINT64 currentShader)
+void HackerContext::RecordShaderResourceUsage(std::map<UINT64, ShaderInfoData> &ShaderInfo, UINT64 currentShader, ID3D11DeviceChild *shaderHandle)
 {
 	ID3D11ShaderResourceView *views[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT];
 	ShaderInfoData *info;
@@ -230,6 +250,14 @@ void HackerContext::RecordShaderResourceUsage(std::map<UINT64, ShaderInfoData> &
 		info = &ShaderInfo[currentShader];
 		_RecordShaderResourceUsage(info, views);
 		RecordPeerShaders(&info->PeerShaders, currentShader);
+		
+		// Capture shader debug name if not already set
+		if (info->shader_name.empty() && shaderHandle) {
+			char name[256];
+			if (GetDebugObjectName(shaderHandle, name, sizeof(name))) {
+				info->shader_name = name;
+			}
+		}
 
 	LeaveCriticalSection(&G->mCriticalSection);
 }
@@ -248,22 +276,22 @@ void HackerContext::RecordGraphicsShaderStats()
 
 	if (mCurrentVertexShader) {
 		RecordShaderResourceUsage<&ID3D11DeviceContext::VSGetShaderResources>
-			(G->mVertexShaderInfo, mCurrentVertexShader);
+			(G->mVertexShaderInfo, mCurrentVertexShader, mCurrentVertexShaderHandle);
 	}
 
 	if (mCurrentHullShader) {
 		RecordShaderResourceUsage<&ID3D11DeviceContext::HSGetShaderResources>
-			(G->mHullShaderInfo, mCurrentHullShader);
+			(G->mHullShaderInfo, mCurrentHullShader, mCurrentHullShaderHandle);
 	}
 
 	if (mCurrentDomainShader) {
 		RecordShaderResourceUsage<&ID3D11DeviceContext::DSGetShaderResources>
-			(G->mDomainShaderInfo, mCurrentDomainShader);
+			(G->mDomainShaderInfo, mCurrentDomainShader, mCurrentDomainShaderHandle);
 	}
 
 	if (mCurrentGeometryShader) {
 		RecordShaderResourceUsage<&ID3D11DeviceContext::GSGetShaderResources>
-			(G->mGeometryShaderInfo, mCurrentGeometryShader);
+			(G->mGeometryShaderInfo, mCurrentGeometryShader, mCurrentGeometryShaderHandle);
 	}
 
 	if (mCurrentPixelShader) {
@@ -272,7 +300,7 @@ void HackerContext::RecordGraphicsShaderStats()
 		OMGetRenderTargetsAndUnorderedAccessViews(0, NULL, NULL, mCurrentPSUAVStartSlot, mCurrentPSNumUAVs, uavs);
 
 		RecordShaderResourceUsage<&ID3D11DeviceContext::PSGetShaderResources>
-			(G->mPixelShaderInfo, mCurrentPixelShader);
+			(G->mPixelShaderInfo, mCurrentPixelShader, mCurrentPixelShaderHandle);
 
 		EnterCriticalSectionPretty(&G->mCriticalSection);
 			info = &G->mPixelShaderInfo[mCurrentPixelShader];
@@ -422,8 +450,14 @@ void HackerContext::RecordShaderSlotProfiling()
 					uint32_t hash = GetResourceHash(resource);
 					uint32_t orig_hash = GetOrigResourceHash(resource);
 					if (hash) {  // Only record if it has a hash
+						// Try to get debug name
+						char name[256];
+						std::string debug_name;
+						if (GetDebugObjectName(resource, name, sizeof(name))) {
+							debug_name = name;
+						}
 						vs_slot_config.bound_resources.insert(
-							ShaderSlotResourceInfo(i, hash, orig_hash));
+							ShaderSlotResourceInfo(i, hash, orig_hash, debug_name));
 					}
 					resource->Release();
 				}
@@ -439,8 +473,14 @@ void HackerContext::RecordShaderSlotProfiling()
 					uint32_t hash = GetResourceHash(resource);
 					uint32_t orig_hash = GetOrigResourceHash(resource);
 					if (hash) {  // Only record if it has a hash
+						// Try to get debug name
+						char name[256];
+						std::string debug_name;
+						if (GetDebugObjectName(resource, name, sizeof(name))) {
+							debug_name = name;
+						}
 						ps_slot_config.bound_resources.insert(
-							ShaderSlotResourceInfo(i, hash, orig_hash));
+							ShaderSlotResourceInfo(i, hash, orig_hash, debug_name));
 					}
 					resource->Release();
 				}
@@ -461,6 +501,21 @@ void HackerContext::RecordShaderSlotProfiling()
 		ShaderPairProfilingData &pair_data = data.shader_pairs[pair_key];
 		pair_data.vertex_shader_hash = mCurrentVertexShader;
 		pair_data.pixel_shader_hash = mCurrentPixelShader;
+		
+		// Capture shader debug names if they're empty (first time seeing this pair)
+		if (pair_data.vertex_shader_name.empty() && mCurrentVertexShaderHandle) {
+			char name[256];
+			if (GetDebugObjectName(mCurrentVertexShaderHandle, name, sizeof(name))) {
+				pair_data.vertex_shader_name = name;
+			}
+		}
+		if (pair_data.pixel_shader_name.empty() && mCurrentPixelShaderHandle) {
+			char name[256];
+			if (GetDebugObjectName(mCurrentPixelShaderHandle, name, sizeof(name))) {
+				pair_data.pixel_shader_name = name;
+			}
+		}
+		
 		pair_data.total_draw_calls++;
 		
 		// Record this specific slot configuration
