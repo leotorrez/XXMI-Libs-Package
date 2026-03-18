@@ -15,6 +15,7 @@
 #include "Override.h"
 #include "Hunting.h"
 #include "ShaderRegex.h"
+#include "ShaderCacheSplit.h"
 #include "cursor.h"
 #include <chrono>
 
@@ -4310,6 +4311,12 @@ void LoadConfigFile()
 		CreateDirectoryEnsuringAccess(G->SHADER_CACHE_PATH);
 	}
 
+	// Split shader cache configuration
+	G->cache_stats_on_startup = GetIniBool(L"Rendering", L"cache_stats_on_startup", false, NULL);
+	G->cache_verify_integrity = GetIniBool(L"Rendering", L"cache_verify_integrity", false, NULL);
+	G->use_split_cache = GetIniBool(L"Rendering", L"use_split_cache", false, NULL);
+	G->split_cache_shaders_per_block = GetIniInt(L"Rendering", L"split_cache_shaders_per_block", 100, NULL);
+
 	G->CACHE_SHADERS = GetIniBool(L"Rendering", L"cache_shaders", false, NULL);
 	G->SCISSOR_DISABLE = GetIniBool(L"Rendering", L"rasterizer_disable_scissor", false, NULL);
 	G->track_texture_updates = GetIniBoolOrInt(L"Rendering", L"track_texture_updates", 0, NULL);
@@ -4491,6 +4498,52 @@ void LoadConfigFile()
 	G->clear_uav_float_command_list.clear();
 	G->post_clear_uav_float_command_list.clear();
 	ParseCommandList(L"ClearUnorderedAccessViewFloat", &G->clear_uav_float_command_list, &G->post_clear_uav_float_command_list, NULL);
+
+	// Initialize split shader cache if enabled
+	if (G->use_split_cache && wcslen(G->SHADER_CACHE_PATH) > 0) {
+		// Initialize split cache
+		try {
+			// Close existing split cache if it exists (during config reload)
+			if (G_SPLIT_SHADER_CACHE) {
+				CloseSplitShaderCache(G_SPLIT_SHADER_CACHE);
+				G_SPLIT_SHADER_CACHE = NULL;
+			}
+			
+			G_SPLIT_SHADER_CACHE = InitSplitShaderCache(
+				G->SHADER_CACHE_PATH, shader_regex_hash,
+				G->split_cache_shaders_per_block);
+
+			if (G_SPLIT_SHADER_CACHE) {
+				uint32_t shader_count, block_file_count;
+				GetSplitCacheStatistics(G_SPLIT_SHADER_CACHE, &shader_count,
+					&block_file_count);
+				LogInfo("Split shader cache: %u shaders in %u blocks\n", 
+						shader_count, block_file_count);
+
+				if (G->cache_stats_on_startup)
+					LogSplitCacheStatistics(G_SPLIT_SHADER_CACHE);
+
+				if (G->cache_verify_integrity) {
+					uint32_t errors = ValidateSplitCacheIntegrity(G_SPLIT_SHADER_CACHE);
+					if (errors > 0)
+						LogInfo("WARNING: Cache validation found %u errors\n", errors);
+				}
+			}
+			else {
+				LogInfo(
+					"WARNING: Failed to initialize split cache, falling back to "
+					"individual files\n");
+			}
+		}
+		catch (std::exception &e) {
+			LogInfo("EXCEPTION during split cache initialization: %s\n", e.what());
+			G_SPLIT_SHADER_CACHE = NULL;
+		}
+		catch (...) {
+			LogInfo("UNKNOWN EXCEPTION during split cache initialization\n");
+			G_SPLIT_SHADER_CACHE = NULL;
+		}
+	}
 
 	LogInfo("\n");
 

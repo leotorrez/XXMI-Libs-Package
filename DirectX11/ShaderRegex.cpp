@@ -1,14 +1,30 @@
 #include "ShaderRegex.h"
+#include "ShaderCacheSplit.h"
 #include "CommandList.h"
 #include "globals.h" // For ShaderOverride FIXME: This should be in a separate header
 #include "log.h"
 
 #include <algorithm>
 #include <iterator>
+#include <map>
 
 ShaderRegexGroups shader_regex_groups;
 std::vector<ShaderRegexGroup*> shader_regex_group_index;
 uint32_t shader_regex_hash;
+
+// Temporary storage for match_ids between apply_shader_regex_groups() and save_shader_regex_cache_bin()
+// Key: hash ^ (shader_type << 32)
+static std::map<uint64_t, std::vector<uint32_t>> pending_regex_match_ids;
+static CRITICAL_SECTION pending_regex_lock;
+
+// Initialize critical section on first use
+static void init_pending_regex_lock() {
+	static bool initialized = false;
+	if (!initialized) {
+		InitializeCriticalSection(&pending_regex_lock);
+		initialized = true;
+	}
+}
 
 static void log_pcre2_error_nonl(int err, char *fmt, ...)
 {
@@ -477,6 +493,68 @@ struct ShaderRegexCacheHeader {
 ShaderRegexCache load_shader_regex_cache(UINT64 hash, const wchar_t *shader_type, vector<byte> *bytecode, std::wstring *tagline)
 {
 	ShaderRegexCache ret = ShaderRegexCache::NO_CACHE;
+	
+	// Try binary cache first if enabled
+	if (G->use_split_cache && G_SPLIT_SHADER_CACHE) {
+		uint32_t bytecode_size = 0;
+		uint32_t num_matches = 0;
+		uint32_t *match_ids = NULL;
+		
+		const void *cached_bytecode = NULL;
+		
+		// Try split cache
+		cached_bytecode = QuerySplitShaderRegexBytecode(G_SPLIT_SHADER_CACHE, hash, shader_type,
+		                                                 shader_regex_hash, &bytecode_size,
+		                                                 &num_matches, &match_ids);
+		
+		if (cached_bytecode) {
+			// Found in binary cache - process match_ids
+			if (num_matches == 0) {
+				// Regex didn't match, but we cached that fact to skip processing
+				FreeSplitShaderBytecode(G_SPLIT_SHADER_CACHE, cached_bytecode);
+				if (match_ids) delete[] match_ids;
+				return ShaderRegexCache::NO_MATCH;
+			}
+			
+			// Process matches and link command lists
+			for (uint32_t i = 0; i < num_matches; i++) {
+				if (match_ids[i] >= shader_regex_group_index.size()) {
+					LogInfo("ShaderRegexCache: Invalid match_id %u (binary cache)\n", match_ids[i]);
+					FreeSplitShaderBytecode(G_SPLIT_SHADER_CACHE, cached_bytecode);
+					delete[] match_ids;
+					return ShaderRegexCache::NO_CACHE;
+				}
+				
+				ShaderRegexGroup *group = shader_regex_group_index[match_ids[i]];
+				// Removed verbose per-frame logging: was causing massive log files and I/O lag
+				// LogInfo("ShaderRegexCache: %S %016I64x matches [%S] (binary cache)\n", 
+				//         shader_type, hash, group->ini_section.c_str());
+				
+				if (tagline)
+					tagline->append(std::wstring(L"[") + group->ini_section + std::wstring(L"]"));
+				
+				group->link_command_lists_and_filter_index(hash);
+			}
+			
+			// Copy bytecode to output
+			if (bytecode_size > 0) {
+				bytecode->resize(bytecode_size);
+				memcpy(bytecode->data(), cached_bytecode, bytecode_size);
+				ret = ShaderRegexCache::PATCH;
+			} else {
+				// Matched but no patch (match-only)
+				ret = ShaderRegexCache::MATCH;
+			}
+			
+			FreeSplitShaderBytecode(G_SPLIT_SHADER_CACHE, cached_bytecode);
+			delete[] match_ids;
+			return ret;
+		}
+		
+		// Not in binary cache - fall through to check file-based cache (for migration)
+	}
+	
+	// Legacy file-based cache
 	HANDLE meta_f = INVALID_HANDLE_VALUE;
 	HANDLE bin_f = INVALID_HANDLE_VALUE;
 	ShaderRegexCacheHeader *header;
@@ -571,12 +649,26 @@ static void save_shader_regex_cache_meta(UINT64 hash, const wchar_t *shader_type
 	FILE *f = NULL;
 	size_t suffix;
 
+	// Binary cache path - works independently of cache_shaders setting
+	if (G->use_split_cache && G_SPLIT_SHADER_CACHE && G->SHADER_CACHE_PATH[0]) {
+		uint32_t type_encoded = EncodeShaderType(shader_type);
+		uint64_t key = hash | ((uint64_t)type_encoded << 32);
+		
+		init_pending_regex_lock();
+		EnterCriticalSection(&pending_regex_lock);
+		pending_regex_match_ids[key] = *match_ids;
+		LeaveCriticalSection(&pending_regex_lock);
+		// Bytecode will be added by save_shader_regex_cache_bin() or stored with empty bytecode if not patched
+	}
+
+	// Legacy file-based cache and export paths require cache_shaders or export_fixed
 	if (!G->SHADER_CACHE_PATH[0] || (!G->CACHE_SHADERS && !G->EXPORT_FIXED))
 		return;
 
 	suffix = swprintf_s(path, MAX_PATH, L"%ls\\%016llx-%ls_regex.", G->SHADER_CACHE_PATH, hash, shader_type);
 
-	if (G->CACHE_SHADERS) {
+	if (G->CACHE_SHADERS && !G->use_split_cache) {
+		// Legacy file-based cache (only when binary cache is disabled)
 		// TODO: When we have a condition field in ShaderRegex: The evaluations
 		// of *all* valid conditions (not just those matched) must qualify the
 		// cache, either by encoding them in the filename or extending the
@@ -628,6 +720,44 @@ static void save_shader_regex_cache_meta(UINT64 hash, const wchar_t *shader_type
 
 void save_shader_regex_cache_bin(UINT64 hash, const wchar_t *shader_type, vector<byte> *bytecode)
 {
+	// Use binary cache if enabled
+	if (G->use_split_cache && G_SPLIT_SHADER_CACHE) {
+		uint32_t type_encoded = EncodeShaderType(shader_type);
+		uint64_t key = hash | ((uint64_t)type_encoded << 32);
+		
+		// Retrieve match_ids that were stored by save_shader_regex_cache_meta
+		init_pending_regex_lock();
+		EnterCriticalSection(&pending_regex_lock);
+		auto it = pending_regex_match_ids.find(key);
+		if (it == pending_regex_match_ids.end()) {
+			LeaveCriticalSection(&pending_regex_lock);
+			LogInfo("ShaderRegexCache: match_ids not found for %016llx-%ls (binary cache)\n", hash, shader_type);
+			return;
+		}
+		
+		std::vector<uint32_t> match_ids = it->second;  // Copy while holding lock
+		pending_regex_match_ids.erase(it);  // Clean up immediately
+		LeaveCriticalSection(&pending_regex_lock);
+		
+		bool success = false;
+		
+		// Store in split cache
+		success = StoreSplitShaderRegexBytecode(G_SPLIT_SHADER_CACHE, hash, shader_type,
+		                                        bytecode->data(), bytecode->size(),
+		                                        match_ids.size(),
+		                                        match_ids.empty() ? NULL : match_ids.data());
+		
+		if (!success) {
+			LogInfo("ShaderRegexCache: Failed to store %ls %016llx to binary cache\n",
+			        shader_type, hash);
+		}
+		// Removed verbose storage logging - only log errors
+		// else { LogInfo("ShaderRegexCache: Stored %ls %016llx (%u bytes, %u matches)\n", ...); }
+		
+		return;
+	}
+	
+	// Legacy file-based cache
 	wchar_t path[MAX_PATH];
 	FILE *f = NULL;
 
@@ -641,6 +771,35 @@ void save_shader_regex_cache_bin(UINT64 hash, const wchar_t *shader_type, vector
 		return;
 	fwrite(bytecode->data(), 1, bytecode->size(), f);
 	fclose(f);
+}
+
+// Finalize regex cache for match-only shaders (no patch, but still matched)
+// This ensures match-only entries are cached with empty bytecode to avoid reprocessing
+void finalize_shader_regex_cache(UINT64 hash, const wchar_t *shader_type)
+{
+	// Check if there's a pending entry that was never finalized
+	if (G->use_split_cache && G_SPLIT_SHADER_CACHE) {
+		uint32_t type_encoded = EncodeShaderType(shader_type);
+		uint64_t key = hash | ((uint64_t)type_encoded << 32);
+		
+		init_pending_regex_lock();
+		EnterCriticalSection(&pending_regex_lock);
+		auto it = pending_regex_match_ids.find(key);
+		if (it != pending_regex_match_ids.end()) {
+			// Found pending entry - mark as regex-processed (match-only, no patch)
+			std::vector<uint32_t> match_ids = it->second;
+			pending_regex_match_ids.erase(it);
+			LeaveCriticalSection(&pending_regex_lock);
+			
+			// Mark shader as regex-processed (match-only means no bytecode change)
+			StoreSplitShaderRegexBytecode(G_SPLIT_SHADER_CACHE, hash, shader_type,
+			                              NULL, 0,  // Empty bytecode for match-only
+			                              match_ids.size(),
+			                              match_ids.empty() ? NULL : match_ids.data());
+		} else {
+			LeaveCriticalSection(&pending_regex_lock);
+		}
+	}
 }
 
 bool apply_shader_regex_groups(std::string *asm_text, const wchar_t *shader_type, std::string *shader_model, UINT64 hash, std::wstring *tagline)

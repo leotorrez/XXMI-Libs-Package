@@ -4,6 +4,7 @@
 #include "Globals.h"
 #include "IniHandler.h"
 #include "HookedDXGI.h"
+#include "ShaderCacheSplit.h"
 
 #include <locale>
 #include <chrono>
@@ -33,6 +34,9 @@
 // needing to change every reference.
 Globals StaticG;
 Globals *G = &StaticG;
+
+// Global split shader cache pointer
+SplitShaderCache *G_SPLIT_SHADER_CACHE = NULL;
 
 FILE *LogFile = 0;		// off by default.
 bool gLogDebug = false;
@@ -118,6 +122,12 @@ static bool InitializeDLL()
 
 void DestroyDLL()
 {
+	// Close split shader cache before shutdown
+	if (G_SPLIT_SHADER_CACHE) {
+		CloseSplitShaderCache(G_SPLIT_SHADER_CACHE);
+		G_SPLIT_SHADER_CACHE = NULL;
+	}
+	
 	if (LogFile)
 	{
 		LogInfo("Destroying DLL...\n");
