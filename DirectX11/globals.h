@@ -469,6 +469,10 @@ struct Globals
 	bool DumpUsage;
 	bool ENABLE_TUNE;
 	float gTuneValue[4], gTuneStep;
+	bool use_split_cache;
+	bool cache_stats_on_startup;
+	bool cache_verify_integrity;
+	int split_cache_shaders_per_block;
 
 	std::vector<DirectX::XMFLOAT4> iniParams;
 	int iniParamsReserved;

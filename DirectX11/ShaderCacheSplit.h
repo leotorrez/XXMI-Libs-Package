@@ -5,6 +5,8 @@
 #include <vector>
 #include <windows.h>
 
+extern struct SplitShaderCache *G_SPLIT_SHADER_CACHE;
+
 // Split Shader Cache System
 // Separates index from shader data for faster partial updates
 // 
