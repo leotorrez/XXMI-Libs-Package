@@ -72,23 +72,31 @@ static void GetBlockFilePath(const SplitShaderCache *cache, uint32_t block_id,
              cache->block_dir, block_id);
 }
 
-// Helper: Open or get cached block file handle
-static HANDLE GetBlockFileHandle(SplitShaderCache *cache, uint32_t block_id, 
-                                  bool create_if_missing) {
-  EnterCriticalSection(&cache->lock);
+// Forward declaration for EvictLRUBlockFile
+static void EvictLRUBlockFile(SplitShaderCache *cache);
 
+// Helper: Open or get cached block file handle
+// NOTE: Must be called while holding cache->lock
+static HANDLE GetBlockFileHandle(SplitShaderCache *cache, uint32_t block_id, 
+                                 bool create_if_missing) {
   // Check if already open
   auto it = cache->open_block_files.find(block_id);
   if (it != cache->open_block_files.end()) {
-    // Move to front of LRU
-    cache->block_file_lru.erase(
-        std::remove(cache->block_file_lru.begin(), 
-                    cache->block_file_lru.end(), block_id),
-        cache->block_file_lru.end());
-    cache->block_file_lru.insert(cache->block_file_lru.begin(), block_id);
-    
-    LeaveCriticalSection(&cache->lock);
+    // Move to front of LRU if not already at front
+    if (!cache->block_file_lru.empty() && cache->block_file_lru.front() != block_id) {
+      cache->block_file_lru.erase(
+          std::remove(cache->block_file_lru.begin(), 
+                      cache->block_file_lru.end(), block_id),
+          cache->block_file_lru.end());
+      cache->block_file_lru.insert(cache->block_file_lru.begin(), block_id);
+    }
     return it->second;
+  }
+
+  // If we have too many open files, evict the least recently used
+  while (cache->open_block_files.size() >= cache->max_open_block_files && 
+         !cache->block_file_lru.empty()) {
+    EvictLRUBlockFile(cache);
   }
 
   // Need to open new file
@@ -101,26 +109,15 @@ static HANDLE GetBlockFileHandle(SplitShaderCache *cache, uint32_t block_id,
                                creation, FILE_ATTRIBUTE_NORMAL, NULL);
 
   if (handle == INVALID_HANDLE_VALUE) {
-    LeaveCriticalSection(&cache->lock);
     return INVALID_HANDLE_VALUE;
   }
 
   cache->block_file_opens++;
 
-  // If we have too many open files, close the least recently used
-  if (cache->open_block_files.size() >= cache->max_open_block_files) {
-    uint32_t lru_block_id = cache->block_file_lru.back();
-    HANDLE lru_handle = cache->open_block_files[lru_block_id];
-    CloseHandle(lru_handle);
-    cache->open_block_files.erase(lru_block_id);
-    cache->block_file_lru.pop_back();
-  }
-
   // Add to cache
   cache->open_block_files[block_id] = handle;
   cache->block_file_lru.insert(cache->block_file_lru.begin(), block_id);
 
-  LeaveCriticalSection(&cache->lock);
   return handle;
 }
 
@@ -184,6 +181,26 @@ static void UnmapBlockFile(SplitShaderCache *cache, uint32_t block_id) {
     CloseHandle(it->second.file_mapping);
     cache->block_mappings.erase(it);
   }
+}
+
+// Helper: Evict LRU block file and its memory mapping
+static void EvictLRUBlockFile(SplitShaderCache *cache) {
+  if (cache->block_file_lru.empty())
+    return;
+  
+  uint32_t lru_block_id = cache->block_file_lru.back();
+  
+  // Unmap memory mapping if exists
+  UnmapBlockFile(cache, lru_block_id);
+  
+  // Close file handle
+  auto it = cache->open_block_files.find(lru_block_id);
+  if (it != cache->open_block_files.end()) {
+    CloseHandle(it->second);
+    cache->open_block_files.erase(it);
+  }
+  
+  cache->block_file_lru.pop_back();
 }
 
 // Memory pool: Allocate bytecode buffer from pool or heap
@@ -517,8 +534,28 @@ const void *QuerySplitShaderBytecode(SplitShaderCache *cache, uint64_t hash,
         
         // Skip regex metadata if present
         if (block_header->flags & BLOCK_FLAG_REGEX_PATCH) {
-          uint32_t *num_matches = (uint32_t *)(block_ptr + data_offset);
-          data_offset += sizeof(uint32_t) + (*num_matches * sizeof(uint32_t));
+          // Validate num_matches bounds before skipping
+          uint32_t *num_matches_ptr = (uint32_t *)(block_ptr + data_offset);
+          uint32_t num_matches = *num_matches_ptr;
+          
+          // SECURITY: Validate num_matches against reasonable maximum
+          const uint32_t MAX_REGEX_MATCHES = 10000;
+          if (num_matches > MAX_REGEX_MATCHES) {
+            LogInfo("SplitCache: num_matches exceeds maximum (%u > %u) - possible corrupted cache\n",
+                    num_matches, MAX_REGEX_MATCHES);
+            LeaveCriticalSection(&cache->lock);
+            return NULL;
+          }
+          
+          // Bounds check: ensure we have enough data
+          size_t match_ids_size = (size_t)num_matches * sizeof(uint32_t);
+          if (data_offset + sizeof(uint32_t) + match_ids_size + block_header->bytecode_size > mapping_it->second.view_size - entry->block_offset) {
+            LogInfo("SplitCache: Insufficient data for regex metadata\n");
+            LeaveCriticalSection(&cache->lock);
+            return NULL;
+          }
+          
+          data_offset += sizeof(uint32_t) + match_ids_size;
         }
         
         // Verify we have enough data
@@ -584,6 +621,15 @@ const void *QuerySplitShaderBytecode(SplitShaderCache *cache, uint64_t hash,
       LeaveCriticalSection(&cache->lock);
       return NULL;
     }
+    // SECURITY: Validate num_matches against reasonable maximum
+    const uint32_t MAX_REGEX_MATCHES = 10000;
+    if (num_matches > MAX_REGEX_MATCHES) {
+      LogInfo("SplitCache: num_matches exceeds maximum (%u > %u) - possible corrupted cache\n",
+              num_matches, MAX_REGEX_MATCHES);
+      FreePoolMemory(cache, bytecode);
+      LeaveCriticalSection(&cache->lock);
+      return NULL;
+    }
     // Skip match IDs
     if (num_matches > 0) {
       SetFilePointer(block_file, num_matches * sizeof(uint32_t), NULL,
@@ -616,6 +662,7 @@ void FreeSplitShaderBytecode(SplitShaderCache *cache, const void *bytecode) {
 }
 
 // Insert shader to cache
+// NOTE: Holds lock throughout operation to prevent race conditions on block file writes
 bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
                                const wchar_t *type, const void *bytecode,
                                uint32_t bytecode_size, FILETIME timestamp) {
@@ -648,7 +695,7 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
   // Invalidate memory mapping for this block (file will be modified)
   UnmapBlockFile(cache, block_file_id);
 
-  // Get block file handle
+  // Get block file handle (lock must be held - GetBlockFileHandle no longer takes lock)
   HANDLE block_file = GetBlockFileHandle(cache, block_file_id, true);
   if (block_file == INVALID_HANDLE_VALUE) {
     LogInfo("SplitCache: Failed to open/create block file %u\n", block_file_id);
@@ -661,9 +708,6 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
   if (!GetFileSizeEx(block_file, &file_size)) {
     file_size.QuadPart = 0;
   }
-
-  // Release lock before file I/O operations to avoid blocking other threads
-  LeaveCriticalSection(&cache->lock);
 
   // If new file, write block file header
   if (file_size.QuadPart == 0) {
@@ -679,6 +723,7 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
     if (!WriteFile(block_file, &block_file_header,
                    sizeof(SplitCacheBlockFileHeader), &written, NULL)) {
       LogInfo("SplitCache: Failed to write block file header\n");
+      LeaveCriticalSection(&cache->lock);
       return false;
     }
     file_size.QuadPart = sizeof(SplitCacheBlockFileHeader);
@@ -701,6 +746,7 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
                  NULL) ||
       written != sizeof(ShaderBlockHeader)) {
     LogInfo("SplitCache: Failed to write shader block header\n");
+    LeaveCriticalSection(&cache->lock);
     return false;
   }
 
@@ -708,6 +754,7 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
   if (!WriteFile(block_file, bytecode, bytecode_size, &written, NULL) ||
       written != bytecode_size) {
     LogInfo("SplitCache: Failed to write shader bytecode\n");
+    LeaveCriticalSection(&cache->lock);
     return false;
   }
 
@@ -720,10 +767,7 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
 
   FlushFileBuffers(block_file);
 
-  // Re-acquire lock to update index
-  EnterCriticalSection(&cache->lock);
-
-  // Add to index
+  // Add to index (still holding lock)
   SplitCacheIndexEntry new_entry;
   new_entry.hash = hash;
   new_entry.type = type_encoded;
@@ -802,20 +846,33 @@ const void *QuerySplitShaderRegexBytecode(SplitShaderCache *cache,
         
         size_t data_offset = sizeof(ShaderBlockHeader);
         
-        // Read regex metadata
+        // Validate num_matches bounds before reading match IDs
+        // We need at least 4 bytes for num_matches, and then num_matches * 4 bytes for match IDs
         uint32_t *num_matches_ptr = (uint32_t *)(block_ptr + data_offset);
+        uint32_t num_matches = *num_matches_ptr;
         data_offset += sizeof(uint32_t);
         
-        uint32_t num_matches = *num_matches_ptr;
+        // Bounds check: ensure num_matches doesn't exceed available data
+        size_t match_ids_size = (size_t)num_matches * sizeof(uint32_t);
+        size_t required_size = data_offset + match_ids_size;
+        
+        // Also check if bytecode will fit (add sizeof(uint32_t) for safety margin)
+        if (required_size + block_header->bytecode_size + 4 > mapping_it->second.view_size - entry->block_offset) {
+          LogInfo("SplitCache: num_matches bounds check failed (num_matches=%u, available=%zu)\n", 
+                  num_matches, (mapping_it->second.view_size - entry->block_offset - data_offset) / sizeof(uint32_t));
+          LeaveCriticalSection(&cache->lock);
+          return NULL;
+        }
+        
         uint32_t *match_ids = NULL;
         
         if (num_matches > 0) {
           match_ids = new uint32_t[num_matches];
-          memcpy(match_ids, block_ptr + data_offset, num_matches * sizeof(uint32_t));
-          data_offset += num_matches * sizeof(uint32_t);
+          memcpy(match_ids, block_ptr + data_offset, match_ids_size);
+          data_offset += match_ids_size;
         }
         
-        // Verify we have enough data
+        // Verify we have enough data for bytecode
         if (entry->block_offset + data_offset + block_header->bytecode_size <= mapping_it->second.view_size) {
           // Allocate and copy bytecode from pool
           uint8_t *bytecode = AllocPoolMemory(cache, block_header->bytecode_size);
@@ -887,6 +944,16 @@ const void *QuerySplitShaderRegexBytecode(SplitShaderCache *cache,
     return NULL;
   }
 
+  // SECURITY: Validate num_matches against reasonable maximum
+  // A shader regex section shouldn't have more than a few thousand matches
+  const uint32_t MAX_REGEX_MATCHES = 10000;
+  if (num_matches > MAX_REGEX_MATCHES) {
+    LogInfo("SplitCache: num_matches exceeds maximum (%u > %u) - possible corrupted cache\n",
+            num_matches, MAX_REGEX_MATCHES);
+    LeaveCriticalSection(&cache->lock);
+    return NULL;
+  }
+
   uint32_t *match_ids = NULL;
   if (num_matches > 0) {
     match_ids = new uint32_t[num_matches];
@@ -926,6 +993,7 @@ const void *QuerySplitShaderRegexBytecode(SplitShaderCache *cache,
 }
 
 // Store regex-patched shader bytecode (or match-only with bytecode_size=0)
+// NOTE: Holds lock throughout operation to prevent race conditions on block file writes
 bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache, 
                                    uint64_t hash,
                                    const wchar_t *type, 
@@ -982,7 +1050,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
     cache->header.block_file_count = block_file_id + 1;
   }
 
-  // Get block file handle
+  // Get block file handle (lock must be held - GetBlockFileHandle no longer takes lock)
   // Invalidate memory mapping for this block (file will be modified)
   UnmapBlockFile(cache, block_file_id);
 
@@ -999,9 +1067,6 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
     file_size.QuadPart = 0;
   }
 
-  // Release lock before file I/O operations to avoid blocking other threads
-  LeaveCriticalSection(&cache->lock);
-
   // If new file, write block file header
   if (file_size.QuadPart == 0) {
     SplitCacheBlockFileHeader block_file_header;
@@ -1016,6 +1081,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
     if (!WriteFile(block_file, &block_file_header,
                    sizeof(SplitCacheBlockFileHeader), &written, NULL)) {
       LogInfo("SplitCache: Failed to write block file header\n");
+      LeaveCriticalSection(&cache->lock);
       return false;
     }
     file_size.QuadPart = sizeof(SplitCacheBlockFileHeader);
@@ -1043,6 +1109,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
                  NULL) ||
       written != sizeof(ShaderBlockHeader)) {
     LogInfo("SplitCache: Failed to write shader block header\n");
+    LeaveCriticalSection(&cache->lock);
     return false;
   }
 
@@ -1050,6 +1117,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
   if (!WriteFile(block_file, &num_matches, sizeof(uint32_t), &written, NULL) ||
       written != sizeof(uint32_t)) {
     LogInfo("SplitCache: Failed to write regex match count\n");
+    LeaveCriticalSection(&cache->lock);
     return false;
   }
 
@@ -1058,6 +1126,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
                    &written, NULL) ||
         written != num_matches * sizeof(uint32_t)) {
       LogInfo("SplitCache: Failed to write regex match IDs\n");
+      LeaveCriticalSection(&cache->lock);
       return false;
     }
   }
@@ -1067,6 +1136,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
     if (!WriteFile(block_file, bytecode, bytecode_size, &written, NULL) ||
         written != bytecode_size) {
       LogInfo("SplitCache: Failed to write shader bytecode\n");
+      LeaveCriticalSection(&cache->lock);
       return false;
     }
   }
@@ -1080,10 +1150,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
 
   FlushFileBuffers(block_file);
 
-  // Re-acquire lock to update index
-  EnterCriticalSection(&cache->lock);
-
-  // Add to index
+  // Add to index (still holding lock)
   SplitCacheIndexEntry new_entry;
   new_entry.hash = hash;
   new_entry.type = type_encoded;
@@ -1440,6 +1507,15 @@ bool MigrateMonolithicToSplit(const wchar_t *old_cache_path,
       if (!ReadFile(old_file, &num_matches, sizeof(uint32_t), &read, NULL) ||
           read != sizeof(uint32_t)) {
         LogInfo("ERROR: Cannot read regex match count at index %u\n", i);
+        error_count++;
+        continue;
+      }
+
+      // SECURITY: Validate num_matches against reasonable maximum
+      const uint32_t MAX_REGEX_MATCHES = 10000;
+      if (num_matches > MAX_REGEX_MATCHES) {
+        LogInfo("ERROR: num_matches exceeds maximum at index %u (%u > %u) - possible corrupted source cache\n",
+                i, num_matches, MAX_REGEX_MATCHES);
         error_count++;
         continue;
       }
