@@ -4312,19 +4312,49 @@ void LoadConfigFile()
 	}
 
 	// Split shader cache configuration
-	G->cache_stats_on_startup = GetIniBool(L"Rendering", L"cache_stats_on_startup", false, NULL);
-	G->cache_verify_integrity = GetIniBool(L"Rendering", L"cache_verify_integrity", false, NULL);
-	G->use_split_cache = GetIniBool(L"Rendering", L"use_split_cache", false, NULL);
-	G->split_cache_shaders_per_block = GetIniInt(L"Rendering", L"split_cache_shaders_per_block", 100, NULL);
+	// Shader caching mode:
+	// 0 = disabled
+	// 1 = traditional monolithic cache
+	// 2 = split cache (faster, better for partial updates)
+	int cache_mode = GetIniInt(L"Rendering", L"cache_shaders", 0, NULL);
 	
-	// Split cache tuning parameters
-	G->split_cache_max_open_files = GetIniInt(L"Rendering", L"split_cache_max_open_files", 10, NULL);
-	G->split_cache_pool_block_size = GetIniInt(L"Rendering", L"split_cache_pool_block_size", 64, NULL);  // KB
-	G->split_cache_max_pool_blocks = GetIniInt(L"Rendering", L"split_cache_max_pool_blocks", 100, NULL);
-	G->split_cache_use_mmap = GetIniBool(L"Rendering", L"split_cache_use_mmap", true, NULL);
-	G->split_cache_use_pool = GetIniBool(L"Rendering", L"split_cache_use_pool", true, NULL);
-
-	G->CACHE_SHADERS = GetIniBool(L"Rendering", L"cache_shaders", false, NULL);
+	switch (cache_mode) {
+	case 1:
+		G->use_split_cache = false;
+		G->CACHE_SHADERS = true;
+		LogInfo("Shader cache: Using traditional monolithic format\n");
+		break;
+	case 2:
+		G->use_split_cache = true;
+		G->CACHE_SHADERS = false;
+		LogInfo("Shader cache: Using split cache format\n");
+		break;
+	default:
+		G->use_split_cache = false;
+		G->CACHE_SHADERS = false;
+		if (cache_mode != 0) {
+			LogInfo("Shader cache: Invalid mode %d, disabled\n", cache_mode);
+		}
+		break;
+	}
+	
+	// Split cache tuning parameters (only used when mode=2)
+	if (G->use_split_cache) {
+		G->split_cache_shaders_per_block = GetIniInt(L"Rendering", L"split_cache_shaders_per_block", 100, NULL);
+		G->split_cache_max_open_files = GetIniInt(L"Rendering", L"split_cache_max_open_files", 10, NULL);
+		G->split_cache_pool_block_size = GetIniInt(L"Rendering", L"split_cache_pool_block_size", 64, NULL);
+		G->split_cache_max_pool_blocks = GetIniInt(L"Rendering", L"split_cache_max_pool_blocks", 100, NULL);
+		G->split_cache_use_mmap = GetIniBool(L"Rendering", L"split_cache_use_mmap", true, NULL);
+		G->split_cache_use_pool = GetIniBool(L"Rendering", L"split_cache_use_pool", true, NULL);
+	} else {
+		// Reset split cache settings when not used
+		G->split_cache_shaders_per_block = 0;
+		G->split_cache_max_open_files = 0;
+		G->split_cache_pool_block_size = 0;
+		G->split_cache_max_pool_blocks = 0;
+		G->split_cache_use_mmap = false;
+		G->split_cache_use_pool = false;
+	}
 	G->SCISSOR_DISABLE = GetIniBool(L"Rendering", L"rasterizer_disable_scissor", false, NULL);
 	G->track_texture_updates = GetIniBoolOrInt(L"Rendering", L"track_texture_updates", 0, NULL);
 	G->assemble_signature_comments = GetIniBool(L"Rendering", L"assemble_signature_comments", false, NULL);
