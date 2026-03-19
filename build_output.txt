@@ -1,0 +1,727 @@
+Versión de MSBuild 17.14.40+3e7442088 para .NET Framework
+
+  decode.cpp
+  pch.cpp
+  decodeDX9.cpp
+  reflect.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(65,1): warning C5204: "Microsoft::WRL::CloakedIid<IMarshal>": la clase tiene funciones virtuales, pero su destructor trivial no es virtual; puede que las instancias de objetos derivados de esta clase no se destruyan correctamente [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "Src/pch.cpp")
+      C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(65,1):
+      el contexto de creación de instancias de la plantilla (el más antiguo primero) es
+          C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(1339,12):
+          Vea la referencia a la creación de una instancia de clase plantilla "Microsoft::WRL::Implements<Microsoft::WRL::RuntimeClassFlags<3>,Microsoft::WRL::CloakedIid<IMarshal>>" que se está compilando
+          C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(1305,84):
+          Vea la referencia a la creación de una instancia de clase plantilla "Microsoft::WRL::Details::AdjustImplements<Microsoft::WRL::RuntimeClassFlags<3>,true,I0>" que se está compilando
+          with
+          [
+              I0=Microsoft::WRL::CloakedIid<IMarshal>
+          ]
+          C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(813,93):
+          Vea la referencia a la creación de una instancia de clase plantilla "Microsoft::WRL::CloakedIid<IMarshal>" que se está compilando
+  
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(1686,19): warning C5220: "Microsoft::WRL::Details::RuntimeClassImpl<Microsoft::WRL::RuntimeClassFlags<2>,true,false,true,IWeakReference>::refcount_": un miembro de datos no estático con un tipo calificado volátil ya no implica [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(1686,19): warning C5220:          que los constructores de copia/movimiento generados por el compilador y los operadores de asignación de copia o movimiento no sean triviales [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "Src/pch.cpp")
+      C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(1686,19):
+      vea la declaración de 'Microsoft::WRL::Details::RuntimeClassImpl<Microsoft::WRL::RuntimeClassFlags<2>,true,false,true,IWeakReference>::refcount_'
+      C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(1686,19):
+      el contexto de creación de instancias de la plantilla (el más antiguo primero) es
+          C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(2235,34):
+          Vea la referencia a la creación de una instancia de clase plantilla "Microsoft::WRL::RuntimeClass<Microsoft::WRL::RuntimeClassFlags<2>,IWeakReference>" que se está compilando
+          C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(2208,21):
+          Vea la referencia a la creación de una instancia de clase plantilla "Microsoft::WRL::Details::RuntimeClassImpl<Microsoft::WRL::RuntimeClassFlags<2>,true,false,true,IWeakReference>" que se está compilando
+  
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(1686,19): warning C5220: "Microsoft::WRL::Details::RuntimeClassImpl<Microsoft::WRL::RuntimeClassFlags<2>,true,false,true,IUnknown>::refcount_": un miembro de datos no estático con un tipo calificado volátil ya no implica [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(1686,19): warning C5220:          que los constructores de copia/movimiento generados por el compilador y los operadores de asignación de copia o movimiento no sean triviales [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "Src/pch.cpp")
+      C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(1686,19):
+      vea la declaración de 'Microsoft::WRL::Details::RuntimeClassImpl<Microsoft::WRL::RuntimeClassFlags<2>,true,false,true,IUnknown>::refcount_'
+      C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(1686,19):
+      el contexto de creación de instancias de la plantilla (el más antiguo primero) es
+          C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\event.h(585,60):
+          Vea la referencia a la creación de una instancia de clase plantilla "Microsoft::WRL::RuntimeClass<Microsoft::WRL::RuntimeClassFlags<2>,IUnknown>" que se está compilando
+          C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\winrt\wrl\implements.h(2208,21):
+          Vea la referencia a la creación de una instancia de clase plantilla "Microsoft::WRL::Details::RuntimeClassImpl<Microsoft::WRL::RuntimeClassFlags<2>,true,false,true,IUnknown>" que se está compilando
+  
+  AlphaTestEffect.cpp
+  BinaryDecompiler.vcxproj -> D:\Githubrepos\XXMI-Libs-Package\x64\Release\BinaryDecompiler.lib
+  BasicEffect.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicEffect.cpp(385,114): warning C5259: 'DirectX::EffectBase<BasicEffectTraits>::deviceResourcesPool': la especialización explícita requiere 'plantilla <>' [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/BasicEffect.cpp")
+  
+  BasicPostProcess.cpp
+  CommonStates.cpp
+  DDSTextureLoader.cpp
+  DebugEffect.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DebugEffect.cpp(183,42): warning C5246: 'anonymous struct or union': la inicialización de un subobjeto debe ajustarse entre llaves [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/DebugEffect.cpp")
+  
+  DGSLEffect.cpp
+  DGSLEffectFactory.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DGSLEffectFactory.cpp(318,23): warning C4388: '<': no coinciden signed/unsigned [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/DGSLEffectFactory.cpp")
+  
+  DualPostProcess.cpp
+  DualTextureEffect.cpp
+  BinaryReader.cpp
+  EffectCommon.cpp
+  EffectFactory.cpp
+  EnvironmentMapEffect.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EnvironmentMapEffect.cpp(263,132): warning C5259: 'DirectX::EffectBase<EnvironmentMapEffectTraits>::deviceResourcesPool': la especialización explícita requiere 'plantilla <>' [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/EnvironmentMapEffect.cpp")
+  
+  GamePad.cpp
+  GeometricPrimitive.cpp
+  Geometry.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(160,34): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(162,27): warning C5219: conversión implícita de "size_t" a "const float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(162,39): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(170,34): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(172,31): warning C5219: conversión implícita de "size_t" a "const float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(172,44): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(380,25): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(381,24): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(545,23): warning C5219: conversión implícita de "size_t" a "const float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(545,36): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(556,24): warning C5219: conversión implícita de "size_t" a "const float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(556,37): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(632,30): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(681,30): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(724,30): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(726,28): warning C5219: conversión implícita de "size_t" a "const float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(726,41): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(735,38): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(737,32): warning C5219: conversión implícita de "size_t" a "const float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(737,45): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(1163,23): warning C4388: '<': no coinciden signed/unsigned [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Bezier.h(65,34): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Bezier.h(65,34):
+      el contexto de creación de instancias de la plantilla (el más antiguo primero) es
+          D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Geometry.cpp(1140,17):
+          Vea la referencia a la creación de una instancia de la función plantilla "void Bezier::CreatePatchVertices<`anonymous-namespace'::TessellatePatch::<lambda_2>>(DirectX::XMVECTOR [],size_t,bool,TOutputFunc)" que se está compilando
+          with
+          [
+              TOutputFunc=`anonymous-namespace'::TessellatePatch::<lambda_2>
+          ]
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Bezier.h(69,38): warning C5219: conversión implícita de "size_t" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Geometry.cpp")
+  
+  GraphicsMemory.cpp
+  Keyboard.cpp
+  Model.cpp
+  Generando código...
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\GamePad.cpp(1189,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\GamePad.cpp(1189,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\GamePad.cpp(1182) : nota: el intervalo "j" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\GamePad.cpp(1189,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\GamePad.cpp(1189) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EnvironmentMapEffect.cpp(285,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EnvironmentMapEffect.cpp(285,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EnvironmentMapEffect.cpp(285,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EnvironmentMapEffect.cpp(285) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt\wchar.h(464,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt\wchar.h(464,1): warning C5045: C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt\wchar.h(456) : nota: el intervalo "" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt\wchar.h(464,1): warning C5045: C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt\wchar.h(464) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualTextureEffect.cpp(139,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualTextureEffect.cpp(139,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualTextureEffect.cpp(139,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualTextureEffect.cpp(139) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualPostProcess.cpp(182,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualPostProcess.cpp(182,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualPostProcess.cpp(182,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualPostProcess.cpp(182) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualPostProcess.cpp(178,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualPostProcess.cpp(178,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualPostProcess.cpp(178,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DualPostProcess.cpp(178) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt\wchar.h(464,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt\wchar.h(464,1): warning C5045: C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt\wchar.h(456) : nota: el intervalo "" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt\wchar.h(464,1): warning C5045: C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt\wchar.h(464) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DGSLEffect.cpp(275,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DGSLEffect.cpp(275,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DGSLEffect.cpp(275,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DGSLEffect.cpp(275) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(79,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(79,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(79,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(79) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DGSLEffect.cpp(236,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DGSLEffect.cpp(236,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DGSLEffect.cpp(236,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DGSLEffect.cpp(236) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DebugEffect.cpp(187,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DebugEffect.cpp(187,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DebugEffect.cpp(187,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DebugEffect.cpp(187) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DebugEffect.cpp(173,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DebugEffect.cpp(173,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DebugEffect.cpp(173,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DebugEffect.cpp(173) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(290,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(290,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(255) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(290,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(367) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(342,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(342,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(332) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(342,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(367) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(204,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(204,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(185) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(204,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(367) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(211,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(211,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(208) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(211,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(211) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(297,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(297,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(294) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(297,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(297) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(349,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(349,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(346) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(349,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(349) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(933,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(933,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(872) : nota: el intervalo "ddsDataSize" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(933,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(933) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(930,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(930,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(917) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(930,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(930) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1036,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1036,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(975) : nota: el intervalo "ddsDataSize" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1036,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1036) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1033,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1033,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1020) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1033,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1033) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(910,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(910,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(872) : nota: el intervalo "ddsDataSize" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(910,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(910) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1013,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1013,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(975) : nota: el intervalo "ddsDataSize" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1013,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\DDSTextureLoader.cpp(1013) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicPostProcess.cpp(215,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicPostProcess.cpp(215,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicPostProcess.cpp(215,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicPostProcess.cpp(215) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicPostProcess.cpp(211,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicPostProcess.cpp(211,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicPostProcess.cpp(211,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicPostProcess.cpp(211) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicEffect.cpp(403,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicEffect.cpp(403,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicEffect.cpp(403,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BasicEffect.cpp(403) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\AlphaTestEffect.cpp(156,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\AlphaTestEffect.cpp(156,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\AlphaTestEffect.cpp(156,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\AlphaTestEffect.cpp(156) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  Compilando...
+  ModelLoadCMO.cpp
+  ModelLoadSDKMESH.cpp
+  ModelLoadVBO.cpp
+  Mouse.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Mouse.cpp(353,90): warning C5219: conversión implícita de "const int" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Mouse.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\Mouse.cpp(354,90): warning C5219: conversión implícita de "const int" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/Mouse.cpp")
+  
+  NormalMapEffect.cpp
+  PBREffect.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PBREffect.cpp(187,56): warning C5246: 'anonymous struct or union': la inicialización de un subobjeto debe ajustarse entre llaves [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/PBREffect.cpp")
+  
+  ScreenGrab.cpp
+  SimpleMath.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(120,14): warning C5267: la definición de constructor de copia implícita para 'DirectX::SimpleMath::Vector2' está en desuso porque tiene un operador de asignaciones proporcionado por el usuario [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(130,34):
+      el constructor de copia implícito para 'DirectX::SimpleMath::Vector2' se requiere primero aquí
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(228,14): warning C5267: la definición de constructor de copia implícita para 'DirectX::SimpleMath::Vector3' está en desuso porque tiene un operador de asignaciones proporcionado por el usuario [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(238,34):
+      el constructor de copia implícito para 'DirectX::SimpleMath::Vector3' se requiere primero aquí
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(343,14): warning C5267: la definición de constructor de copia implícita para 'DirectX::SimpleMath::Vector4' está en desuso porque tiene un operador de asignaciones proporcionado por el usuario [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(353,34):
+      el constructor de copia implícito para 'DirectX::SimpleMath::Vector4' se requiere primero aquí
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(470,13): warning C5267: la definición de constructor de copia implícita para 'DirectX::SimpleMath::Matrix' está en desuso porque tiene un operador de asignaciones proporcionado por el usuario [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(484,33):
+      el constructor de copia implícito para 'DirectX::SimpleMath::Matrix' se requiere primero aquí
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(647,17): warning C5267: la definición de constructor de copia implícita para 'DirectX::SimpleMath::Quaternion' está en desuso porque tiene un operador de asignaciones proporcionado por el usuario [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(657,37):
+      el constructor de copia implícito para 'DirectX::SimpleMath::Quaternion' se requiere primero aquí
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(728,12): warning C5267: la definición de constructor de copia implícita para 'DirectX::SimpleMath::Color' está en desuso porque tiene un operador de asignaciones proporcionado por el usuario [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(740,32):
+      el constructor de copia implícito para 'DirectX::SimpleMath::Color' se requiere primero aquí
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.inl(32,37): warning C5219: conversión implícita de "const long" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.inl(32,68): warning C5219: conversión implícita de "const long" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(72,16): warning C5267: la definición de constructor de copia implícita para 'DirectX::SimpleMath::Rectangle' está en desuso porque tiene un operador de asignaciones proporcionado por el usuario [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.inl(83,5):
+      el constructor de copia implícito para 'DirectX::SimpleMath::Rectangle' se requiere primero aquí
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.h(599,12): warning C5267: la definición de constructor de copia implícita para 'DirectX::SimpleMath::Plane' está en desuso porque tiene un operador de asignaciones proporcionado por el usuario [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Inc\SimpleMath.inl(2815,5):
+      el constructor de copia implícito para 'DirectX::SimpleMath::Plane' se requiere primero aquí
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SimpleMath.cpp(144,33): warning C5219: conversión implícita de "int" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SimpleMath.cpp")
+  
+  SkinnedEffect.cpp
+  SpriteBatch.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(303,25): warning C4388: '<': no coinciden signed/unsigned [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SpriteBatch.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(896,23): warning C4388: '<': no coinciden signed/unsigned [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SpriteBatch.cpp")
+  
+  PrimitiveBatch.cpp
+  SpriteFont.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteFont.cpp(384,26): warning C5219: conversión implícita de "LONG" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SpriteFont.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteFont.cpp(387,26): warning C5219: conversión implícita de "LONG" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SpriteFont.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteFont.cpp(390,19): warning C5219: conversión implícita de "LONG" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SpriteFont.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteFont.cpp(393,19): warning C5219: conversión implícita de "LONG" a "float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SpriteFont.cpp")
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteFont.cpp(213,54): warning C5219: conversión implícita de "LONG" a "const float"; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  (compilando archivo de origen "/Src/SpriteFont.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteFont.cpp(213,54):
+      el contexto de creación de instancias de la plantilla (el más antiguo primero) es
+          D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteFont.cpp(327,12):
+          Vea la referencia a la creación de una instancia de la función plantilla "void DirectX::SpriteFont::Impl::ForEachGlyph<DirectX::SpriteFont::DrawString::<lambda_1>>(const wchar_t *,TAction) const" que se está compilando
+          with
+          [
+              TAction=DirectX::SpriteFont::DrawString::<lambda_1>
+          ]
+  
+  ToneMapPostProcess.cpp
+  VertexTypes.cpp
+  WICTextureLoader.cpp
+  Generando código...
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(191,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(191,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(176) : nota: el intervalo "" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(191,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(191) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(184,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(184,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(176) : nota: el intervalo "" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(184,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(184) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(761,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(761,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(752) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(761,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(790) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(846,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(846,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(837) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(846,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\WICTextureLoader.cpp(875) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ToneMapPostProcess.cpp(270,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ToneMapPostProcess.cpp(270,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ToneMapPostProcess.cpp(270,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ToneMapPostProcess.cpp(270) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ToneMapPostProcess.cpp(266,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ToneMapPostProcess.cpp(266,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ToneMapPostProcess.cpp(266,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ToneMapPostProcess.cpp(266) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BinaryReader.h(60,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BinaryReader.h(60,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BinaryReader.h(53) : nota: el intervalo "newPos" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BinaryReader.h(60,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BinaryReader.h(60) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BinaryReader.h(39,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BinaryReader.h(39,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BinaryReader.h(53) : nota: el intervalo "newPos" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BinaryReader.h(39,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\BinaryReader.h(39) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PrimitiveBatch.cpp(156,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PrimitiveBatch.cpp(156,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PrimitiveBatch.cpp(156,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PrimitiveBatch.cpp(156) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(257,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(257,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(257,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(257) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(250,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(250,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(250,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(250) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(331,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(331,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(331,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(331) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(363,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(363,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(363,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SpriteBatch.cpp(363) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SkinnedEffect.cpp(296,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SkinnedEffect.cpp(296,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SkinnedEffect.cpp(296,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\SkinnedEffect.cpp(296) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(83,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(83,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(78) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(83,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(161) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(134,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(134,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(129) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(134,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(134) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(113,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(113,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(108) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(113,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(113) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(98,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(98,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(60) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(98,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(98) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(98,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(98,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(87) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(98,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ScreenGrab.cpp(98) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PBREffect.cpp(200,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PBREffect.cpp(200,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PBREffect.cpp(200,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PBREffect.cpp(200) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PBREffect.cpp(176,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PBREffect.cpp(176,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PBREffect.cpp(176,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PBREffect.cpp(176) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(100) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\ConstantBuffer.h(33) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\EffectCommon.h(157) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\NormalMapEffect.cpp(197,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\NormalMapEffect.cpp(197,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\NormalMapEffect.cpp(197,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\NormalMapEffect.cpp(197) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\NormalMapEffect.cpp(186,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\NormalMapEffect.cpp(186,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\NormalMapEffect.cpp(186,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\NormalMapEffect.cpp(186) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: El compilador insertará la mitigación de Spectre para la carga de memoria si se especificó el modificador /Qspectre [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(44) : nota: el intervalo "hr" del índice se comprobó por comparación en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46,1): warning C5045: D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Src\PlatformHelpers.h(46) : nota: suministra la llamada en esta línea [D:\Githubrepos\XXMI-Libs-Package\DirectXTK\DirectXTK_Desktop_2017.vcxproj]
+  DirectXTK_Desktop_2017.vcxproj -> D:\Githubrepos\XXMI-Libs-Package\DirectXTK\Bin\Desktop_2017\x64\Release\DirectXTK.lib
+  crc32c.cpp
+  Assembler.cpp
+  SignatureParser.cpp
+  DecompileHLSL.cpp
+  CommandList.cpp
+  iid.cpp
+  ini_parser_lite.cpp
+  util.cpp
+  cursor.cpp
+  D3D11Wrapper.cpp
+  DLLMainHook.cpp
+  FrameAnalysis.cpp
+  HackerContext.cpp
+  HackerDevice.cpp
+  HackerDXGI.cpp
+  HookedContext.cpp
+  HookedDevice.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18): warning C4244: '=': conversión de 'wchar_t' a 'char'; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+  (compilando archivo de origen "../util.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18):
+      el contexto de creación de instancias de la plantilla (el más antiguo primero) es
+          D:\Githubrepos\XXMI-Libs-Package\util.cpp(309,26):
+          Vea la referencia a la creación de una instancia de la función plantilla "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)" que se está compilando
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              D:\Githubrepos\XXMI-Libs-Package\util.cpp(309,13):
+              vea la primera referencia a “std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string” en “NameFromIID”
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(812,17):
+          Vea la referencia a la creación de una instancia de la función plantilla "void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<wchar_t*,wchar_t*,_Size_type>(_Iter,const _Sent,_Size)" que se está compilando
+          with
+          [
+              _Size_type=std::+::_Size_type,
+              _Iter=wchar_t *,
+              _Sent=wchar_t *,
+              _Size=std::+::_Size_type
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(968,18):
+          Vea la referencia a la creación de una instancia de la función plantilla "_OutIt *std::_Copy_n_unchecked4<wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)" que se está compilando
+          with
+          [
+              _OutIt=char *,
+              _Size=std::+::_Size_type,
+              _InIt=wchar_t *,
+              _SizeTy=std::+::_Size_type
+          ]
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.h(130,7): warning C4250: 'KeyOverride': hereda 'Override::Override::ParseIniSection' mediante dominación [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+  (compilando archivo de origen "CommandList.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.h(118,7):
+      vea la declaración de 'Override::ParseIniSection'
+  
+  HookedDXGI.cpp
+  Hunting.cpp
+  IniHandler.cpp
+  Input.cpp
+  lock.cpp
+  Overlay.cpp
+  Override.cpp
+  profiling.cpp
+  ResourceHash.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\HackerDevice.cpp(1591,65): warning C4018: '<': no coinciden signed/unsigned [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\HackerDevice.cpp(1932,23): warning C4018: '<': no coinciden signed/unsigned [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.h(130,7): warning C4250: 'KeyOverride': hereda 'Override::Override::ParseIniSection' mediante dominación [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+  (compilando archivo de origen "HackerDXGI.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.h(118,7):
+      vea la declaración de 'Override::ParseIniSection'
+  
+  ShaderCacheSplit.cpp
+  ShaderRegex.cpp
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.h(130,7): warning C4250: 'KeyOverride': hereda 'Override::Override::ParseIniSection' mediante dominación [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+  (compilando archivo de origen "IniHandler.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.h(118,7):
+      vea la declaración de 'Override::ParseIniSection'
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.h(130,7): warning C4250: 'KeyOverride': hereda 'Override::Override::ParseIniSection' mediante dominación [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+  (compilando archivo de origen "Override.cpp")
+      D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.h(118,7):
+      vea la declaración de 'Override::ParseIniSection'
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\ShaderCacheSplit.cpp(462,26): warning C4267: 'inicializando': conversión de 'size_t' a 'DWORD'; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\ShaderCacheSplit.cpp(732,37): warning C4244: '=': conversión de 'LONGLONG' a 'uint32_t'; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\ShaderCacheSplit.cpp(1092,37): warning C4244: '=': conversión de 'LONGLONG' a 'uint32_t'; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\ShaderCacheSplit.cpp(1256,7): warning C4477: 'fprintf' : la cadena de formato '%llu' requiere un argumento de tipo 'unsigned __int64', pero el argumento variádico 1 tiene el tipo 'uint32_t' [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+      D:\Githubrepos\XXMI-Libs-Package\DirectX11\ShaderCacheSplit.cpp(1256,7):
+      considere el uso de ' %u' en la cadena de formato
+      D:\Githubrepos\XXMI-Libs-Package\DirectX11\ShaderCacheSplit.cpp(1256,7):
+      considere el uso de ' %I32u' en la cadena de formato
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.cpp(591,8): warning C4101: 'current': variable local sin referencia [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.cpp(658,8): warning C4101: 'val': variable local sin referencia [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\Override.cpp(725,8): warning C4101: 'val': variable local sin referencia [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18): warning C4244: '=': conversión de 'wchar_t' a 'char'; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+  (compilando archivo de origen "IniHandler.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18):
+      el contexto de creación de instancias de la plantilla (el más antiguo primero) es
+          D:\Githubrepos\XXMI-Libs-Package\DirectX11\IniHandler.cpp(704,17):
+          Vea la referencia a la creación de una instancia de la función plantilla "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)" que se está compilando
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              D:\Githubrepos\XXMI-Libs-Package\DirectX11\IniHandler.cpp(704,17):
+              vea la primera referencia a “std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string” en “glob_to_regex”
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(812,17):
+          Vea la referencia a la creación de una instancia de la función plantilla "void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<wchar_t*,wchar_t*,_Size_type>(_Iter,const _Sent,_Size)" que se está compilando
+          with
+          [
+              _Size_type=std::+::_Size_type,
+              _Iter=wchar_t *,
+              _Sent=wchar_t *,
+              _Size=std::+::_Size_type
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(968,18):
+          Vea la referencia a la creación de una instancia de la función plantilla "_OutIt *std::_Copy_n_unchecked4<wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)" que se está compilando
+          with
+          [
+              _OutIt=char *,
+              _Size=std::+::_Size_type,
+              _InIt=wchar_t *,
+              _SizeTy=std::+::_Size_type
+          ]
+  
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\ShaderRegex.cpp(747,57): warning C4267: 'argumento': conversión de 'size_t' a 'uint32_t'; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\ShaderRegex.cpp(746,75): warning C4267: 'argumento': conversión de 'size_t' a 'uint32_t'; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+D:\Githubrepos\XXMI-Libs-Package\DirectX11\ShaderRegex.cpp(797,48): warning C4267: 'argumento': conversión de 'size_t' a 'uint32_t'; posible pérdida de datos [D:\Githubrepos\XXMI-Libs-Package\DirectX11\DirectX11.vcxproj]
+  HookAddresses.c
+     Creando biblioteca D:\Githubrepos\XXMI-Libs-Package\x64\Release\d3d11.lib y objeto D:\Githubrepos\XXMI-Libs-Package\x64\Release\d3d11.exp
+  Generando código
+  Previous IPDB was built with incompatible compiler, fall back to full compilation.
+  All 16708 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Generación de código finalizada
+  DirectX11.vcxproj -> D:\Githubrepos\XXMI-Libs-Package\x64\Release\d3d11.dll
+  Copy all Dependencies to target directory.
+  D:\Githubrepos\XXMI-Libs-Package\Dependencies\d3dcompiler_47.dll
+  D:\Githubrepos\XXMI-Libs-Package\Dependencies\d3dx.ini
+  2 archivo(s) copiado(s)

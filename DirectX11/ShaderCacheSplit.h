@@ -41,6 +41,9 @@ extern struct SplitShaderCache *G_SPLIT_SHADER_CACHE;
 // Maximum number of regex matches allowed per shader (security limit)
 #define MAX_REGEX_MATCHES 10000
 
+// Maximum shader bytecode size (256MB limit)
+#define MAX_SHADER_BYTECODE_SIZE (256 * 1024 * 1024)
+
 // Block flags
 #define BLOCK_FLAG_USED 0x00000001
 #define BLOCK_FLAG_HAS_ASM 0x00000002

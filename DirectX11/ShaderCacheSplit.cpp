@@ -103,7 +103,7 @@ static HANDLE GetBlockFileHandle(SplitShaderCache *cache, uint32_t block_id,
   wchar_t block_path[MAX_PATH];
   GetBlockFilePath(cache, block_id, block_path, MAX_PATH);
 
-  DWORD access = GENERIC_READ | GENERIC_WRITE;
+  DWORD access = create_if_missing ? (GENERIC_READ | GENERIC_WRITE) : GENERIC_READ;
   DWORD creation = create_if_missing ? OPEN_ALWAYS : OPEN_EXISTING;
   HANDLE handle = CreateFileW(block_path, access, FILE_SHARE_READ, NULL,
                                creation, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -181,6 +181,29 @@ static void UnmapBlockFile(SplitShaderCache *cache, uint32_t block_id) {
     CloseHandle(it->second.file_mapping);
     cache->block_mappings.erase(it);
   }
+}
+
+// Helper: Update block file header after writing shader data
+// NOTE: Must be called while holding cache->lock
+static bool UpdateBlockFileHeader(SplitShaderCache *cache, HANDLE block_file, 
+                                  uint32_t block_id, uint32_t shader_count, 
+                                  uint32_t data_size) {
+  SplitCacheBlockFileHeader header;
+  memset(&header, 0, sizeof(SplitCacheBlockFileHeader));
+  memcpy(header.magic, SHADER_CACHE_SPLIT_BLOCK_MAGIC, 8);
+  header.version = SHADER_CACHE_SPLIT_VERSION;
+  header.block_id = block_id;
+  header.shader_count = shader_count;
+  header.data_size = data_size;
+
+  DWORD written;
+  SetFilePointer(block_file, 0, NULL, FILE_BEGIN);
+  if (!WriteFile(block_file, &header, sizeof(SplitCacheBlockFileHeader), &written, NULL) ||
+      written != sizeof(SplitCacheBlockFileHeader)) {
+    LogInfo("SplitCache: Failed to update block file header for block %u\n", block_id);
+    return false;
+  }
+  return true;
 }
 
 // Helper: Evict LRU block file and its memory mapping
@@ -534,6 +557,14 @@ const void *QuerySplitShaderBytecode(SplitShaderCache *cache, uint64_t hash,
       
       // Validate block header
       if (block_header->magic == SHADER_BLOCK_MAGIC && block_header->shader_hash == hash) {
+        // Validate bytecode size
+        if (block_header->bytecode_size > MAX_SHADER_BYTECODE_SIZE) {
+          LogInfo("SplitCache: Invalid bytecode size (%u > %u) - possible corrupted cache\n",
+                  block_header->bytecode_size, MAX_SHADER_BYTECODE_SIZE);
+          LeaveCriticalSection(&cache->lock);
+          return NULL;
+        }
+        
         // Calculate bytecode offset
         size_t data_offset = sizeof(ShaderBlockHeader);
         
@@ -609,6 +640,14 @@ const void *QuerySplitShaderBytecode(SplitShaderCache *cache, uint64_t hash,
   // Validate block header
   if (block_header.magic != SHADER_BLOCK_MAGIC || block_header.shader_hash != hash) {
     LogInfo("SplitCache: Invalid shader block header\n");
+    LeaveCriticalSection(&cache->lock);
+    return NULL;
+  }
+  
+  // Validate bytecode size
+  if (block_header.bytecode_size > MAX_SHADER_BYTECODE_SIZE) {
+    LogInfo("SplitCache: Invalid bytecode size (%u > %u) - possible corrupted cache\n",
+            block_header.bytecode_size, MAX_SHADER_BYTECODE_SIZE);
     LeaveCriticalSection(&cache->lock);
     return NULL;
   }
@@ -765,10 +804,33 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
   uint32_t padding_size = block_header.total_size - sizeof(ShaderBlockHeader) - bytecode_size;
   if (padding_size > 0) {
     uint8_t padding[4] = {0};
-    WriteFile(block_file, padding, padding_size, &written, NULL);
+    if (!WriteFile(block_file, padding, padding_size, &written, NULL) ||
+        written != padding_size) {
+      LogInfo("SplitCache: Failed to write padding\n");
+      LeaveCriticalSection(&cache->lock);
+      return false;
+    }
   }
 
   FlushFileBuffers(block_file);
+
+  // Update block file header with current counts
+  uint32_t block_shader_count = 1;  // Count shaders in this block (we just added one)
+  uint32_t block_data_size = (uint32_t)(file_size.QuadPart - sizeof(SplitCacheBlockFileHeader)) + block_header.total_size;
+  
+  // Read existing header to get accumulated count
+  LARGE_INTEGER zero_pos = {0};
+  SplitCacheBlockFileHeader old_header;
+  DWORD read;
+  SetFilePointerEx(block_file, zero_pos, NULL, FILE_BEGIN);
+  if (ReadFile(block_file, &old_header, sizeof(SplitCacheBlockFileHeader), &read, NULL) &&
+      read == sizeof(SplitCacheBlockFileHeader) &&
+      memcmp(old_header.magic, SHADER_CACHE_SPLIT_BLOCK_MAGIC, 8) == 0) {
+    block_shader_count = old_header.shader_count + 1;
+    block_data_size = old_header.data_size + block_header.total_size;
+  }
+  
+  UpdateBlockFileHeader(cache, block_file, block_file_id, block_shader_count, block_data_size);
 
   // Add to index (still holding lock)
   SplitCacheIndexEntry new_entry;
@@ -847,25 +909,42 @@ const void *QuerySplitShaderRegexBytecode(SplitShaderCache *cache,
       if (block_header->magic == SHADER_BLOCK_MAGIC && block_header->shader_hash == hash &&
           block_header->shader_type == type_encoded) {
         
+        // Validate bytecode size
+        if (block_header->bytecode_size > MAX_SHADER_BYTECODE_SIZE) {
+          LogInfo("SplitCache: Invalid bytecode size (%u > %u) - possible corrupted cache\n",
+                  block_header->bytecode_size, MAX_SHADER_BYTECODE_SIZE);
+          LeaveCriticalSection(&cache->lock);
+          return NULL;
+        }
+        
         size_t data_offset = sizeof(ShaderBlockHeader);
         
         // Validate num_matches bounds before reading match IDs
         // We need at least 4 bytes for num_matches, and then num_matches * 4 bytes for match IDs
         uint32_t *num_matches_ptr = (uint32_t *)(block_ptr + data_offset);
         uint32_t num_matches = *num_matches_ptr;
-        data_offset += sizeof(uint32_t);
         
-        // Bounds check: ensure num_matches doesn't exceed available data
-        size_t match_ids_size = (size_t)num_matches * sizeof(uint32_t);
-        size_t required_size = data_offset + match_ids_size;
-        
-        // Also check if bytecode will fit (add sizeof(uint32_t) for safety margin)
-        if (required_size + block_header->bytecode_size + 4 > mapping_it->second.view_size - entry->block_offset) {
-          LogInfo("SplitCache: num_matches bounds check failed (num_matches=%u, available=%zu)\n", 
-                  num_matches, (mapping_it->second.view_size - entry->block_offset - data_offset) / sizeof(uint32_t));
+        // SECURITY: Validate num_matches against reasonable maximum
+        if (num_matches > MAX_REGEX_MATCHES) {
+          LogInfo("SplitCache: num_matches exceeds maximum (%u > %u) - possible corrupted cache\n", 
+                  num_matches, MAX_REGEX_MATCHES);
           LeaveCriticalSection(&cache->lock);
           return NULL;
         }
+        
+        // Bounds check: ensure num_matches doesn't exceed available data
+        size_t match_ids_size = (size_t)num_matches * sizeof(uint32_t);
+        size_t required_size = data_offset + sizeof(uint32_t) + match_ids_size;
+        
+        // Also check if bytecode will fit
+        if (required_size + block_header->bytecode_size + 4 > mapping_it->second.view_size - entry->block_offset) {
+          LogInfo("SplitCache: num_matches bounds check failed (num_matches=%u, available=%zu)\n", 
+                  num_matches, (mapping_it->second.view_size - entry->block_offset - data_offset - sizeof(uint32_t)) / sizeof(uint32_t));
+          LeaveCriticalSection(&cache->lock);
+          return NULL;
+        }
+        
+        data_offset += sizeof(uint32_t) + match_ids_size;
         
         uint32_t *match_ids = NULL;
         
@@ -934,6 +1013,14 @@ const void *QuerySplitShaderRegexBytecode(SplitShaderCache *cache,
   if (block_header.magic != SHADER_BLOCK_MAGIC || block_header.shader_hash != hash ||
       block_header.shader_type != type_encoded) {
     LogInfo("SplitCache: Block header mismatch\n");
+    LeaveCriticalSection(&cache->lock);
+    return NULL;
+  }
+  
+  // Validate bytecode size
+  if (block_header.bytecode_size > MAX_SHADER_BYTECODE_SIZE) {
+    LogInfo("SplitCache: Invalid bytecode size (%u > %u) - possible corrupted cache\n",
+            block_header.bytecode_size, MAX_SHADER_BYTECODE_SIZE);
     LeaveCriticalSection(&cache->lock);
     return NULL;
   }
@@ -1148,10 +1235,32 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
   uint32_t padding_size = aligned_size - total_data_size;
   if (padding_size > 0) {
     uint8_t padding[4] = {0};
-    WriteFile(block_file, padding, padding_size, &written, NULL);
+    if (!WriteFile(block_file, padding, padding_size, &written, NULL) ||
+        written != padding_size) {
+      LogInfo("SplitCache: Failed to write padding\n");
+      LeaveCriticalSection(&cache->lock);
+      return false;
+    }
   }
 
   FlushFileBuffers(block_file);
+
+  // Update block file header with current counts
+  uint32_t block_shader_count = 1;
+  uint32_t block_data_size = (uint32_t)(file_size.QuadPart - sizeof(SplitCacheBlockFileHeader)) + aligned_size;
+  
+  LARGE_INTEGER zero_pos = {0};
+  SplitCacheBlockFileHeader old_header;
+  DWORD read;
+  SetFilePointerEx(block_file, zero_pos, NULL, FILE_BEGIN);
+  if (ReadFile(block_file, &old_header, sizeof(SplitCacheBlockFileHeader), &read, NULL) &&
+      read == sizeof(SplitCacheBlockFileHeader) &&
+      memcmp(old_header.magic, SHADER_CACHE_SPLIT_BLOCK_MAGIC, 8) == 0) {
+    block_shader_count = old_header.shader_count + 1;
+    block_data_size = old_header.data_size + aligned_size;
+  }
+  
+  UpdateBlockFileHeader(cache, block_file, block_file_id, block_shader_count, block_data_size);
 
   // Add to index (still holding lock)
   SplitCacheIndexEntry new_entry;
@@ -1299,9 +1408,8 @@ uint32_t ValidateSplitCacheIntegrity(SplitShaderCache *cache) {
 
     // Check if block file exists
     wchar_t block_path[MAX_PATH];
-    swprintf_s(block_path, MAX_PATH, L"%ls\\ShaderCache_%04u.bin",
-               cache->block_dir, entry->block_file_id);
-
+    GetBlockFilePath(cache, entry->block_file_id, block_path, MAX_PATH);
+    
     DWORD attribs = GetFileAttributesW(block_path);
     if (attribs == INVALID_FILE_ATTRIBUTES) {
       LogInfo("ERROR: Block file %u doesn't exist for index entry %zu\n",
@@ -1310,8 +1418,10 @@ uint32_t ValidateSplitCacheIntegrity(SplitShaderCache *cache) {
       continue;
     }
 
-    // Try to open and verify block
-    HANDLE block_file = GetBlockFileHandle(cache, entry->block_file_id, false);
+    // Open block file directly (don't use GetBlockFileHandle to avoid LRU cache pollution)
+    HANDLE block_file = CreateFileW(block_path, GENERIC_READ, 
+                                    FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                    NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (block_file == INVALID_HANDLE_VALUE) {
       LogInfo("ERROR: Cannot open block file %u for validation\n",
               entry->block_file_id);
@@ -1356,6 +1466,8 @@ uint32_t ValidateSplitCacheIntegrity(SplitShaderCache *cache) {
       LogInfo("ERROR: Type mismatch at index %zu\n", i);
       error_count++;
     }
+
+    CloseHandle(block_file);  // Close validation handle (opened directly, not via LRU cache)
   }
 
   if (error_count == 0) {
