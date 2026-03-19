@@ -439,6 +439,7 @@ struct Globals
 	MarkingAction marking_actions;
 
 	UINT hunting;
+	int overlay_buffer_hash_lifetime;
 	bool fix_enabled;
 	bool config_reloadable;
 	bool show_original_enabled;
@@ -456,6 +457,9 @@ struct Globals
 	std::unordered_set<void*> frame_analysis_seen_rts;
 
 	ShaderHashType shader_hash_type;
+	bool track_region_hashes;
+	bool track_implicit_index_buffers;
+	bool allow_buffer_resize;
 	int texture_hash_version;
 	int EXPORT_HLSL;		// 0=off, 1=HLSL only, 2=HLSL+OriginalASM, 3= HLSL+OriginalASM+recompiledASM
 	bool EXPORT_SHADERS, EXPORT_FIXED, EXPORT_BINARY, CACHE_SHADERS, SCISSOR_DISABLE;
@@ -473,11 +477,11 @@ struct Globals
 	bool cache_stats_on_startup;
 	bool cache_verify_integrity;
 	int split_cache_shaders_per_block;
-	int split_cache_max_open_files;     // Max open block file handles
-	int split_cache_pool_block_size;    // Memory pool block size in KB
-	int split_cache_max_pool_blocks;   // Max memory pool blocks
-	bool split_cache_use_mmap;         // Enable memory-mapped I/O
-	bool split_cache_use_pool;          // Enable memory pool
+	int split_cache_max_open_files;
+	int split_cache_pool_block_size;
+	int split_cache_max_pool_blocks;
+	bool split_cache_use_mmap;
+	bool split_cache_use_pool;
 
 	std::vector<DirectX::XMFLOAT4> iniParams;
 	int iniParamsReserved;
@@ -511,16 +515,20 @@ struct Globals
 
 	CRITICAL_SECTION mCriticalSection;
 
-	std::set<uint32_t> mVisitedIndexBuffers;				// std::set is sorted for consistent order while hunting
+	float mVisitedBuffersLastPurgeTime;
+	std::unordered_map<uint32_t, unsigned> mVisitedIndexBuffersLastSeenFrame;
+	std::unordered_map<uint32_t, unsigned> mVisitedVertexBuffersLastSeenFrame;
+
+	std::set<uint32_t> mVisitedIndexBuffers;		        // std::set is sorted for consistent order while hunting
 	uint32_t mSelectedIndexBuffer;
 	int mSelectedIndexBufferPos;
 	std::set<UINT64> mSelectedIndexBuffer_VertexShader;		// std::set so that shaders used with an index buffer will be sorted in log when marked
 	std::set<UINT64> mSelectedIndexBuffer_PixelShader;		// std::set so that shaders used with an index buffer will be sorted in log when marked
 
-	std::set<uint32_t> mVisitedVertexBuffers;				// std::set is sorted for consistent order while hunting
+	std::set<uint32_t> mVisitedVertexBuffers;		        // std::set is sorted for consistent order while hunting
 	uint32_t mSelectedVertexBuffer;
 	int mSelectedVertexBufferPos;
-	std::set<UINT64> mSelectedVertexBuffer_VertexShader;		// std::set so that shaders used with an index buffer will be sorted in log when marked
+	std::set<UINT64> mSelectedVertexBuffer_VertexShader;	// std::set so that shaders used with an index buffer will be sorted in log when marked
 	std::set<UINT64> mSelectedVertexBuffer_PixelShader;		// std::set so that shaders used with an index buffer will be sorted in log when marked
 
 	std::set<UINT64> mVisitedVertexShaders;					// Only shaders seen since last hunting timeout; std::set for consistent order while hunting
@@ -636,6 +644,7 @@ struct Globals
 		mPinkingShader(0),
 
 		hunting(HUNTING_MODE_DISABLED),
+		overlay_buffer_hash_lifetime(-1),
 		fix_enabled(true),
 		config_reloadable(false),
 		show_original_enabled(false),
@@ -652,6 +661,9 @@ struct Globals
 		cur_analyse_options(FrameAnalysisOptions::INVALID),
 
 		shader_hash_type(ShaderHashType::FNV),
+		track_region_hashes(false),
+		track_implicit_index_buffers(false),
+		allow_buffer_resize(true),
 		texture_hash_version(0),
 		EXPORT_SHADERS(false),
 		EXPORT_HLSL(0),
@@ -661,6 +673,15 @@ struct Globals
 		DumpUsage(false),
 		ENABLE_TUNE(false),
 		gTuneStep(0.001f),
+		use_split_cache(false),
+		cache_stats_on_startup(false),
+		cache_verify_integrity(false),
+		split_cache_shaders_per_block(0),
+		split_cache_max_open_files(0),
+		split_cache_pool_block_size(0),
+		split_cache_max_pool_blocks(0),
+		split_cache_use_mmap(true),
+		split_cache_use_pool(true),
 
 		iniParamsReserved(0),
 
@@ -779,6 +800,8 @@ static struct TLS* get_tls()
 }
 
 extern Globals *G;
+struct SplitShaderCache;
+extern SplitShaderCache *G_SPLIT_SHADER_CACHE;
 
 static inline ShaderMap::iterator lookup_shader_hash(ID3D11DeviceChild *shader)
 {

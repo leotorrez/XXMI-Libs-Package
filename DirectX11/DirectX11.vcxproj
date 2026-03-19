@@ -65,8 +65,8 @@
     <ClCompile Include="Override.cpp" />
     <ClCompile Include="profiling.cpp" />
     <ClCompile Include="ResourceHash.cpp" />
-    <ClCompile Include="ShaderCacheSplit.cpp" />
     <ClCompile Include="ShaderRegex.cpp" />
+    <ClCompile Include="ShaderCacheSplit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="d3d11Wrapper.def" />
@@ -98,8 +98,8 @@
     <ClInclude Include="Override.h" />
     <ClInclude Include="profiling.h" />
     <ClInclude Include="ResourceHash.h" />
-    <ClInclude Include="ShaderCacheSplit.h" />
     <ClInclude Include="ShaderRegex.h" />
+    <ClInclude Include="ShaderCacheSplit.h" />
     <ClInclude Include="..\vkeys.h" />
   </ItemGroup>
   <ItemGroup>
