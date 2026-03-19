@@ -4316,6 +4316,13 @@ void LoadConfigFile()
 	G->cache_verify_integrity = GetIniBool(L"Rendering", L"cache_verify_integrity", false, NULL);
 	G->use_split_cache = GetIniBool(L"Rendering", L"use_split_cache", false, NULL);
 	G->split_cache_shaders_per_block = GetIniInt(L"Rendering", L"split_cache_shaders_per_block", 100, NULL);
+	
+	// Split cache tuning parameters
+	G->split_cache_max_open_files = GetIniInt(L"Rendering", L"split_cache_max_open_files", 10, NULL);
+	G->split_cache_pool_block_size = GetIniInt(L"Rendering", L"split_cache_pool_block_size", 64, NULL);  // KB
+	G->split_cache_max_pool_blocks = GetIniInt(L"Rendering", L"split_cache_max_pool_blocks", 100, NULL);
+	G->split_cache_use_mmap = GetIniBool(L"Rendering", L"split_cache_use_mmap", true, NULL);
+	G->split_cache_use_pool = GetIniBool(L"Rendering", L"split_cache_use_pool", true, NULL);
 
 	G->CACHE_SHADERS = GetIniBool(L"Rendering", L"cache_shaders", false, NULL);
 	G->SCISSOR_DISABLE = GetIniBool(L"Rendering", L"rasterizer_disable_scissor", false, NULL);
@@ -4511,7 +4518,12 @@ void LoadConfigFile()
 			
 			G_SPLIT_SHADER_CACHE = InitSplitShaderCache(
 				G->SHADER_CACHE_PATH, shader_regex_hash,
-				G->split_cache_shaders_per_block);
+				G->split_cache_shaders_per_block,
+				G->split_cache_max_open_files,
+				G->split_cache_pool_block_size * 1024,  // Convert KB to bytes
+				G->split_cache_max_pool_blocks,
+				G->split_cache_use_mmap,
+				G->split_cache_use_pool);
 
 			if (G_SPLIT_SHADER_CACHE) {
 				uint32_t shader_count, block_file_count;

@@ -473,6 +473,11 @@ struct Globals
 	bool cache_stats_on_startup;
 	bool cache_verify_integrity;
 	int split_cache_shaders_per_block;
+	int split_cache_max_open_files;     // Max open block file handles
+	int split_cache_pool_block_size;    // Memory pool block size in KB
+	int split_cache_max_pool_blocks;   // Max memory pool blocks
+	bool split_cache_use_mmap;         // Enable memory-mapped I/O
+	bool split_cache_use_pool;          // Enable memory pool
 
 	std::vector<DirectX::XMFLOAT4> iniParams;
 	int iniParamsReserved;

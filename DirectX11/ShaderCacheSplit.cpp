@@ -257,7 +257,12 @@ static void FreePoolMemory(SplitShaderCache *cache, uint8_t *ptr) {
 // Initialize split shader cache
 SplitShaderCache *InitSplitShaderCache(const wchar_t *cache_dir, 
                                        uint32_t regex_hash,
-                                       uint32_t shaders_per_block) {
+                                       uint32_t shaders_per_block,
+                                       uint32_t max_open_files,
+                                       uint32_t pool_block_size,
+                                       uint32_t max_pool_blocks,
+                                       bool use_mmap,
+                                       bool use_pool) {
   if (!cache_dir) {
     LogInfo("SplitCache: Invalid cache directory\n");
     return NULL;
@@ -277,15 +282,15 @@ SplitShaderCache *InitSplitShaderCache(const wchar_t *cache_dir,
   swprintf_s(cache->index_path, MAX_PATH, L"%ls\\ShaderCache.idx", cache_dir);
   
   cache->index_file_handle = INVALID_HANDLE_VALUE;
-  cache->max_open_block_files = 10;
+  cache->max_open_block_files = max_open_files > 0 ? max_open_files : DEFAULT_MAX_OPEN_BLOCK_FILES;
   cache->dirty = false;
   cache->read_only = false;
-  cache->use_memory_mapping = true; // Enable memory-mapped I/O by default
+  cache->use_memory_mapping = use_mmap;
   
   // Initialize memory pool
-  cache->pool_block_size = 65536; // 64KB blocks (typical shader size)
-  cache->max_pool_blocks = 100;   // Max 100 blocks = 6.4 MB pool
-  cache->use_memory_pool = true;  // Enable memory pool by default
+  cache->pool_block_size = pool_block_size > 0 ? pool_block_size : DEFAULT_POOL_BLOCK_SIZE;
+  cache->max_pool_blocks = max_pool_blocks > 0 ? max_pool_blocks : DEFAULT_MAX_POOL_BLOCKS;
+  cache->use_memory_pool = use_pool;
   
   // Initialize statistics
   cache->query_count = 0;
@@ -528,7 +533,7 @@ const void *QuerySplitShaderBytecode(SplitShaderCache *cache, uint64_t hash,
       ShaderBlockHeader *block_header = (ShaderBlockHeader *)block_ptr;
       
       // Validate block header
-      if (block_header->magic == 0x53444342 && block_header->shader_hash == hash) {
+      if (block_header->magic == SHADER_BLOCK_MAGIC && block_header->shader_hash == hash) {
         // Calculate bytecode offset
         size_t data_offset = sizeof(ShaderBlockHeader);
         
@@ -539,7 +544,6 @@ const void *QuerySplitShaderBytecode(SplitShaderCache *cache, uint64_t hash,
           uint32_t num_matches = *num_matches_ptr;
           
           // SECURITY: Validate num_matches against reasonable maximum
-          const uint32_t MAX_REGEX_MATCHES = 10000;
           if (num_matches > MAX_REGEX_MATCHES) {
             LogInfo("SplitCache: num_matches exceeds maximum (%u > %u) - possible corrupted cache\n",
                     num_matches, MAX_REGEX_MATCHES);
@@ -603,7 +607,7 @@ const void *QuerySplitShaderBytecode(SplitShaderCache *cache, uint64_t hash,
   }
 
   // Validate block header
-  if (block_header.magic != 0x53444342 || block_header.shader_hash != hash) {
+  if (block_header.magic != SHADER_BLOCK_MAGIC || block_header.shader_hash != hash) {
     LogInfo("SplitCache: Invalid shader block header\n");
     LeaveCriticalSection(&cache->lock);
     return NULL;
@@ -622,7 +626,6 @@ const void *QuerySplitShaderBytecode(SplitShaderCache *cache, uint64_t hash,
       return NULL;
     }
     // SECURITY: Validate num_matches against reasonable maximum
-    const uint32_t MAX_REGEX_MATCHES = 10000;
     if (num_matches > MAX_REGEX_MATCHES) {
       LogInfo("SplitCache: num_matches exceeds maximum (%u > %u) - possible corrupted cache\n",
               num_matches, MAX_REGEX_MATCHES);
@@ -713,7 +716,7 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
   if (file_size.QuadPart == 0) {
     SplitCacheBlockFileHeader block_file_header;
     memset(&block_file_header, 0, sizeof(SplitCacheBlockFileHeader));
-    memcpy(block_file_header.magic, "3DMBLOCK", 8);  // Copy exactly 8 bytes, no null terminator
+    memcpy(block_file_header.magic, SHADER_CACHE_SPLIT_BLOCK_MAGIC, 8);
     block_file_header.version = SHADER_CACHE_SPLIT_VERSION;
     block_file_header.block_id = block_file_id;
     block_file_header.shader_count = 0;
@@ -734,7 +737,7 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
 
   // Write shader block header
   ShaderBlockHeader block_header;
-  block_header.magic = 0x53444342;
+  block_header.magic = SHADER_BLOCK_MAGIC;
   block_header.flags = BLOCK_FLAG_USED;
   block_header.shader_hash = hash;
   block_header.shader_type = type_encoded;
@@ -841,7 +844,7 @@ const void *QuerySplitShaderRegexBytecode(SplitShaderCache *cache,
       ShaderBlockHeader *block_header = (ShaderBlockHeader *)block_ptr;
       
       // Verify block header
-      if (block_header->magic == 0x53444342 && block_header->shader_hash == hash &&
+      if (block_header->magic == SHADER_BLOCK_MAGIC && block_header->shader_hash == hash &&
           block_header->shader_type == type_encoded) {
         
         size_t data_offset = sizeof(ShaderBlockHeader);
@@ -928,7 +931,7 @@ const void *QuerySplitShaderRegexBytecode(SplitShaderCache *cache,
   }
 
   // Verify block header
-  if (block_header.magic != 0x53444342 || block_header.shader_hash != hash ||
+  if (block_header.magic != SHADER_BLOCK_MAGIC || block_header.shader_hash != hash ||
       block_header.shader_type != type_encoded) {
     LogInfo("SplitCache: Block header mismatch\n");
     LeaveCriticalSection(&cache->lock);
@@ -946,7 +949,7 @@ const void *QuerySplitShaderRegexBytecode(SplitShaderCache *cache,
 
   // SECURITY: Validate num_matches against reasonable maximum
   // A shader regex section shouldn't have more than a few thousand matches
-  const uint32_t MAX_REGEX_MATCHES = 10000;
+  
   if (num_matches > MAX_REGEX_MATCHES) {
     LogInfo("SplitCache: num_matches exceeds maximum (%u > %u) - possible corrupted cache\n",
             num_matches, MAX_REGEX_MATCHES);
@@ -1071,7 +1074,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
   if (file_size.QuadPart == 0) {
     SplitCacheBlockFileHeader block_file_header;
     memset(&block_file_header, 0, sizeof(SplitCacheBlockFileHeader));
-    memcpy(block_file_header.magic, "3DMBLOCK", 8);  // Copy exactly 8 bytes, no null terminator
+    memcpy(block_file_header.magic, SHADER_CACHE_SPLIT_BLOCK_MAGIC, 8);
     block_file_header.version = SHADER_CACHE_SPLIT_VERSION;
     block_file_header.block_id = block_file_id;
     block_file_header.shader_count = 0;
@@ -1097,7 +1100,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
 
   // Write shader block header
   ShaderBlockHeader block_header;
-  block_header.magic = 0x53444342;
+  block_header.magic = SHADER_BLOCK_MAGIC;
   block_header.flags = BLOCK_FLAG_USED | BLOCK_FLAG_REGEX_PATCH;
   block_header.shader_hash = hash;
   block_header.shader_type = type_encoded;
@@ -1337,8 +1340,8 @@ uint32_t ValidateSplitCacheIntegrity(SplitShaderCache *cache) {
       continue;
     }
 
-    if (block_header.magic != 0x53444342) {
-      LogInfo("ERROR: Invalid block magic at index %zu (expected 0x53444342, got 0x%08X)\n",
+    if (block_header.magic != SHADER_BLOCK_MAGIC) {
+      LogInfo("ERROR: Invalid block magic at index %zu (expected SHADER_BLOCK_MAGIC, got 0x%08X)\n",
               i, block_header.magic);
       error_count++;
     }
@@ -1451,9 +1454,10 @@ bool MigrateMonolithicToSplit(const wchar_t *old_cache_path,
     return false;
   }
 
-  // Create new split cache
+  // Create new split cache with defaults (migration doesn't need custom tuning)
   SplitShaderCache *new_cache = InitSplitShaderCache(
-      new_cache_dir, old_header.shader_regex_hash, SHADERS_PER_BLOCK_FILE);
+      new_cache_dir, old_header.shader_regex_hash, SHADERS_PER_BLOCK_FILE,
+      0, 0, 0, true, true);
   if (!new_cache) {
     LogInfo("ERROR: Cannot initialize split cache\n");
     CloseHandle(old_file);
@@ -1488,7 +1492,7 @@ bool MigrateMonolithicToSplit(const wchar_t *old_cache_path,
     }
 
     // Verify block header
-    if (block_header.magic != 0x53444342) {
+    if (block_header.magic != SHADER_BLOCK_MAGIC) {
       LogInfo("ERROR: Invalid block magic at index %u\n", i);
       error_count++;
       continue;
@@ -1512,7 +1516,7 @@ bool MigrateMonolithicToSplit(const wchar_t *old_cache_path,
       }
 
       // SECURITY: Validate num_matches against reasonable maximum
-      const uint32_t MAX_REGEX_MATCHES = 10000;
+      
       if (num_matches > MAX_REGEX_MATCHES) {
         LogInfo("ERROR: num_matches exceeds maximum at index %u (%u > %u) - possible corrupted source cache\n",
                 i, num_matches, MAX_REGEX_MATCHES);

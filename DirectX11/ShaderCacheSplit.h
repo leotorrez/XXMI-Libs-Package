@@ -14,16 +14,32 @@ extern struct SplitShaderCache *G_SPLIT_SHADER_CACHE;
 //   ShaderCache.idx     - Header + Index table (always loaded, lightweight)
 //   ShaderCache_NNN.bin - Shader blocks in chunks (loaded on demand)
 //
-// Benefits:
-//   - Only rebuild changed shaders, not entire cache
-//   - Faster startup (index is smaller)
-//   - Parallel block file access
-//   - Easier backup/sync (only changed blocks)
+// Thread Safety:
+//   The cache uses a single CRITICAL_SECTION for all operations.
+//   Public API functions acquire this lock internally.
+//   Holding the lock across file I/O is intentional to prevent race
+//   conditions when multiple threads write to the same block file.
+//
+// INI Configuration Options (Rendering section):
+//   use_split_cache=true              - Enable split cache
+//   split_cache_shaders_per_block=100 - Shaders per block file
+//   split_cache_max_open_files=10     - Max open file handles
+//   split_cache_pool_block_size=64    - Memory pool block size (KB)
+//   split_cache_max_pool_blocks=100   - Max memory pool blocks
+//   split_cache_use_mmap=true         - Enable memory-mapped I/O
+//   split_cache_use_pool=true         - Enable memory pool
 
 // Constants
 #define SHADER_CACHE_SPLIT_MAGIC "3DMSPLIT"
+#define SHADER_CACHE_SPLIT_BLOCK_MAGIC "3DMBLOCK"
 #define SHADER_CACHE_SPLIT_VERSION 4 // Version 4: Split cache format
 #define SHADERS_PER_BLOCK_FILE 100   // Number of shaders per block file
+
+// Block magic number (0x53444342 = "SDCB" - Shader Data Cache Block)
+#define SHADER_BLOCK_MAGIC 0x53444342
+
+// Maximum number of regex matches allowed per shader (security limit)
+#define MAX_REGEX_MATCHES 10000
 
 // Block flags
 #define BLOCK_FLAG_USED 0x00000001
@@ -34,6 +50,95 @@ extern struct SplitShaderCache *G_SPLIT_SHADER_CACHE;
 // Alignment macros
 #define ALIGN_4(x) (((x) + 3) & ~3)
 #define ALIGN_16(x) (((x) + 15) & ~15)
+
+// Default configuration values
+#define DEFAULT_MAX_OPEN_BLOCK_FILES 10
+#define DEFAULT_POOL_BLOCK_SIZE 65536   // 64KB
+#define DEFAULT_MAX_POOL_BLOCKS 100
+
+// RAII wrapper for file handles
+class ScopedFileHandle {
+public:
+    explicit ScopedFileHandle(HANDLE h = INVALID_HANDLE_VALUE) : handle(h) {}
+    ~ScopedFileHandle() { close(); }
+    
+    ScopedFileHandle(const ScopedFileHandle&) = delete;
+    ScopedFileHandle& operator=(const ScopedFileHandle&) = delete;
+    
+    ScopedFileHandle(ScopedFileHandle&& other) noexcept : handle(other.handle) {
+        other.handle = INVALID_HANDLE_VALUE;
+    }
+    ScopedFileHandle& operator=(ScopedFileHandle&& other) noexcept {
+        if (this != &other) {
+            close();
+            handle = other.handle;
+            other.handle = INVALID_HANDLE_VALUE;
+        }
+        return *this;
+    }
+    
+    operator HANDLE() const { return handle; }
+    bool is_valid() const { return handle != INVALID_HANDLE_VALUE && handle != NULL; }
+    void close() {
+        if (is_valid()) {
+            CloseHandle(handle);
+            handle = INVALID_HANDLE_VALUE;
+        }
+    }
+    
+    HANDLE release() {
+        HANDLE old = handle;
+        handle = INVALID_HANDLE_VALUE;
+        return old;
+    }
+    
+private:
+    HANDLE handle;
+};
+
+// RAII wrapper for memory-mapped file views
+class ScopedMapping {
+public:
+    ScopedMapping() : view(nullptr), mapping(nullptr) {}
+    ~ScopedMapping() { unmap(); }
+    
+    ScopedMapping(const ScopedMapping&) = delete;
+    ScopedMapping& operator=(const ScopedMapping&) = delete;
+    
+    bool map(HANDLE file, SIZE_T size) {
+        unmap();
+        mapping = CreateFileMappingW(file, NULL, PAGE_READONLY, 0, 0, NULL);
+        if (!mapping) return false;
+        
+        view = MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, 0);
+        if (!view) {
+            CloseHandle(mapping);
+            mapping = nullptr;
+            return false;
+        }
+        view_size = size;
+        return true;
+    }
+    
+    void unmap() {
+        if (view) {
+            UnmapViewOfFile(view);
+            view = nullptr;
+        }
+        if (mapping) {
+            CloseHandle(mapping);
+            mapping = nullptr;
+        }
+    }
+    
+    void* get_view() { return view; }
+    SIZE_T get_size() const { return view_size; }
+    
+private:
+    void* view;
+    HANDLE mapping;
+    SIZE_T view_size;
+};
 
 // Index file header (64 bytes)
 #pragma pack(push, 4)
@@ -76,7 +181,7 @@ struct SplitCacheBlockFileHeader {
 // For original shaders:
 //   Followed by: [Bytecode]
 struct ShaderBlockHeader {
-  uint32_t magic;         // 0x53444342 = "SDCB" (Shader Data Cache Block)
+  uint32_t magic;         // SHADER_BLOCK_MAGIC (0x53444342 = "SDCB")
   uint32_t flags;         // BLOCK_FLAG_* flags
   uint64_t shader_hash;   // Shader hash
   uint32_t shader_type;   // Encoded type: "ps"=0x7073, "vs"=0x7673, etc.
@@ -103,7 +208,7 @@ struct SplitShaderCache {
   // Open block file handles (LRU cache)
   std::unordered_map<uint32_t, HANDLE> open_block_files;
   std::vector<uint32_t> block_file_lru; // Most recently used block files
-  uint32_t max_open_block_files;        // Max cached file handles (default: 10)
+  uint32_t max_open_block_files;        // Max cached file handles (default: DEFAULT_MAX_OPEN_BLOCK_FILES)
   
   // Memory-mapped file support for fast read access
   struct BlockMapping {
@@ -121,8 +226,8 @@ struct SplitShaderCache {
     bool in_use;
   };
   std::vector<MemoryBlock> memory_pool;
-  uint32_t pool_block_size;           // Size of each pool block (default: 64KB)
-  uint32_t max_pool_blocks;           // Max blocks in pool (default: 100)
+  uint32_t pool_block_size;           // Size of each pool block (default: DEFAULT_POOL_BLOCK_SIZE)
+  uint32_t max_pool_blocks;           // Max blocks in pool (default: DEFAULT_MAX_POOL_BLOCKS)
   bool use_memory_pool;               // Enable memory pool (default: true)
   
   // State tracking
@@ -149,9 +254,15 @@ struct SplitShaderCache {
 // Initialize split shader cache from directory
 // cache_dir: Directory containing ShaderCache.idx and block files
 // Creates directory structure if doesn't exist
+// Tuning parameters: pass 0 for defaults (uses constants)
 SplitShaderCache *InitSplitShaderCache(const wchar_t *cache_dir, 
                                        uint32_t regex_hash = 0,
-                                       uint32_t shaders_per_block = SHADERS_PER_BLOCK_FILE);
+                                       uint32_t shaders_per_block = SHADERS_PER_BLOCK_FILE,
+                                       uint32_t max_open_files = 0,
+                                       uint32_t pool_block_size = 0,
+                                       uint32_t max_pool_blocks = 0,
+                                       bool use_mmap = true,
+                                       bool use_pool = true);
 
 // Close cache and flush to disk
 void CloseSplitShaderCache(SplitShaderCache *cache);
