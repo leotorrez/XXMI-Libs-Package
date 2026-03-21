@@ -79,18 +79,35 @@ static void EvictLRUBlockFile(SplitShaderCache *cache);
 // NOTE: Must be called while holding cache->lock
 static HANDLE GetBlockFileHandle(SplitShaderCache *cache, uint32_t block_id, 
                                  bool create_if_missing) {
-  // Check if already open
-  auto it = cache->open_block_files.find(block_id);
-  if (it != cache->open_block_files.end()) {
-    // Move to front of LRU if not already at front
-    if (!cache->block_file_lru.empty() && cache->block_file_lru.front() != block_id) {
+  // If we need write access, we might need to reopen the file with write permissions
+  if (create_if_missing) {
+    auto it = cache->open_block_files.find(block_id);
+    if (it != cache->open_block_files.end()) {
+      // File is already open. For writes, we need read+write access.
+      // The current handle might be read-only. We need to close and reopen.
+      CloseHandle(it->second);
+      cache->open_block_files.erase(it);
+      // Remove from LRU list
       cache->block_file_lru.erase(
           std::remove(cache->block_file_lru.begin(), 
                       cache->block_file_lru.end(), block_id),
           cache->block_file_lru.end());
-      cache->block_file_lru.insert(cache->block_file_lru.begin(), block_id);
+      // Fall through to reopen with write access
     }
-    return it->second;
+  } else {
+    // Check if already open
+    auto it = cache->open_block_files.find(block_id);
+    if (it != cache->open_block_files.end()) {
+      // Move to front of LRU if not already at front
+      if (!cache->block_file_lru.empty() && cache->block_file_lru.front() != block_id) {
+        cache->block_file_lru.erase(
+            std::remove(cache->block_file_lru.begin(), 
+                        cache->block_file_lru.end(), block_id),
+            cache->block_file_lru.end());
+        cache->block_file_lru.insert(cache->block_file_lru.begin(), block_id);
+      }
+      return it->second;
+    }
   }
 
   // If we have too many open files, evict the least recently used
@@ -429,9 +446,16 @@ SplitShaderCache *InitSplitShaderCache(const wchar_t *cache_dir,
 
   // Update regex hash if changed
   if (cache->header.shader_regex_hash != regex_hash) {
+    LogInfo("SplitCache: Regex hash changed (0x%08x -> 0x%08x) - invalidating cached regex shaders\n",
+            cache->header.shader_regex_hash, regex_hash);
     cache->header.shader_regex_hash = regex_hash;
     cache->dirty = true;
-    LogInfo("SplitCache: Updated shader_regex_hash to 0x%08x\n", regex_hash);
+    // Clear regex flag on all shaders since regex patterns have changed
+    for (size_t i = 0; i < cache->index.size(); i++) {
+      if (cache->index[i].flags & BLOCK_FLAG_REGEX_PATCH) {
+        cache->index[i].flags &= ~BLOCK_FLAG_REGEX_PATCH;
+      }
+    }
   }
 
   return cache;
@@ -727,7 +751,7 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
   cache->insert_count++;
 
   // Determine which block file to use
-  uint32_t block_file_id = cache->header.shader_count / cache->header.shaders_per_block;
+  uint32_t block_file_id = (uint32_t)cache->index.size() / cache->header.shaders_per_block;
   
   // Update block file count if needed
   if (block_file_id >= cache->header.block_file_count) {
@@ -838,7 +862,7 @@ bool InsertSplitShaderToCache(SplitShaderCache *cache, uint64_t hash,
   new_entry.type = type_encoded;
   new_entry.bytecode_size = bytecode_size;
   new_entry.block_file_id = block_file_id;
-  new_entry.block_offset = file_size.QuadPart;
+  new_entry.block_offset = (uint32_t)file_size.QuadPart;
   new_entry.flags = block_header.flags;
   new_entry.reserved = 0;
 
@@ -1133,7 +1157,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
   cache->insert_count++;
 
   // Determine which block file to use
-  uint32_t block_file_id = cache->header.shader_count / cache->header.shaders_per_block;
+  uint32_t block_file_id = (uint32_t)cache->index.size() / cache->header.shaders_per_block;
   
   // Update block file count if needed
   if (block_file_id >= cache->header.block_file_count) {
@@ -1268,7 +1292,7 @@ bool StoreSplitShaderRegexBytecode(SplitShaderCache *cache,
   new_entry.type = type_encoded;
   new_entry.bytecode_size = bytecode_size;
   new_entry.block_file_id = block_file_id;
-  new_entry.block_offset = file_size.QuadPart;
+  new_entry.block_offset = (uint32_t)file_size.QuadPart;
   new_entry.flags = block_header.flags;
   new_entry.reserved = 0;
 
@@ -1433,7 +1457,7 @@ uint32_t ValidateSplitCacheIntegrity(SplitShaderCache *cache) {
     LARGE_INTEGER seek_pos;
     seek_pos.QuadPart = entry->block_offset;
     if (!SetFilePointerEx(block_file, seek_pos, NULL, FILE_BEGIN)) {
-      LogInfo("ERROR: Cannot seek to offset %llu in block file %u\n",
+      LogInfo("ERROR: Cannot seek to offset %u in block file %u\n",
               entry->block_offset, entry->block_file_id);
       error_count++;
       continue;

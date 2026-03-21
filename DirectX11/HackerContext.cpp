@@ -574,6 +574,8 @@ void HackerContext::DeferredShaderReplacement(ID3D11DeviceChild *shader, UINT64 
 
 		if (!patch_regex) {
 			LogInfo("Patch did not apply\n");
+			// Cache NO_MATCH to avoid re-analyzing this shader
+			finalize_shader_regex_cache(hash, shader_type);
 			goto out_drop;
 		}
 
@@ -589,6 +591,8 @@ void HackerContext::DeferredShaderReplacement(ID3D11DeviceChild *shader, UINT64 
 			hr = AssembleFluganWithSignatureParsing(&asm_vector, &patched_bytecode, &parse_errors);
 			if (FAILED(hr)) {
 				LogInfo("    *** Assembling patched shader failed\n");
+				// Cache NO_MATCH to avoid re-attempting assembly on this shader
+				finalize_shader_regex_cache(hash, shader_type);
 				goto out_drop;
 			}
 			// Parse errors are currently being treated as non-fatal on
