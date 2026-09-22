@@ -901,7 +901,7 @@ void XM_CALLCONV SpriteBatch::Impl::RenderSprite(SpriteInfo const* sprite,
     for (int i = 0; i < VerticesPerSprite; i++)
     {
         // Calculate position.
-        XMVECTOR cornerOffset = (cornerOffsets[i] - origin) * destinationSize;
+        XMVECTOR cornerOffset = XMVectorMultiply(XMVectorSubtract(cornerOffsets[i], origin), destinationSize);
         
         // Apply 2x2 rotation matrix.
         XMVECTOR position1 = XMVectorMultiplyAdd(XMVectorSplatX(cornerOffset), rotationMatrix1, destination);

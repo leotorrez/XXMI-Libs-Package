@@ -320,7 +320,7 @@ void XM_CALLCONV SpriteFont::DrawString(_In_ SpriteBatch* spriteBatch, _In_z_ wc
     // If the text is mirrored, offset the start position accordingly.
     if (effects)
     {
-        baseOffset -= MeasureString(text) * axisIsMirroredTable[effects & 3];
+        baseOffset -= XMVectorMultiply(MeasureString(text), axisIsMirroredTable[effects & 3]);
     }
 
     // Draw each character in turn.
