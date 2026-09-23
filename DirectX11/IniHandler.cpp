@@ -653,13 +653,39 @@ static void ParseIniExcerpt(const wchar_t *excerpt)
 // it, make sure you delay calling it until after the log file has been opened!
 static void ParseNamespacedIniFile(const wchar_t *ini, const wstring *ini_namespace)
 {
-	wifstream f(ini, ios::in);
-	if (!f) {
+	// Read the file as raw bytes and decode UTF-8 once. wifstream +
+	// codecvt_utf8 does a virtual call per character under libc++ and is
+	// orders of magnitude slower than the native decoder, which meant the
+	// MSVC build parsed the ini files in ~1s while the zig build took ~9s.
+	ifstream in(ini, ios::binary);
+	if (!in) {
 		LogOverlay(LOG_WARNING, "  Error opening %S\n", ini);
 		return;
 	}
-	f.imbue(std::locale(f.getloc(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
-	ParseIniStream(&f, ini_namespace);
+	string data((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
+	in.close();
+
+	wstring text;
+	if (data.size() > 0) {
+		// codecvt_utf8 with consume_header skipped a UTF-8 BOM; the native
+		// decoder does not, so reproduce that behaviour.
+		if (data.size() >= 3
+		 && (unsigned char)data[0] == 0xEF
+		 && (unsigned char)data[1] == 0xBB
+		 && (unsigned char)data[2] == 0xBF)
+			data.erase(0, 3);
+
+		int n = MultiByteToWideChar(CP_UTF8, 0, data.c_str(), (int)data.size(), NULL, 0);
+		if (n <= 0) {
+			LogOverlay(LOG_WARNING, "  Error decoding %S\n", ini);
+			return;
+		}
+		text.resize(n);
+		MultiByteToWideChar(CP_UTF8, 0, data.c_str(), (int)data.size(), &text[0], n);
+	}
+
+	wistringstream stream(text);
+	ParseIniStream(&stream, ini_namespace);
 }
 
 static void ParseIniFile(const wchar_t *ini)
